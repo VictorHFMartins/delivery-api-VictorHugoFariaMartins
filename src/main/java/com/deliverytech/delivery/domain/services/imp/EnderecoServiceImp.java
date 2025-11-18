@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.deliverytech.delivery.api.dto.CepRequest;
 import com.deliverytech.delivery.api.dto.EnderecoRequest;
@@ -26,7 +27,6 @@ import com.deliverytech.delivery.domain.services.EnderecoService;
 import com.deliverytech.delivery.domain.validator.UsuarioValidator;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -123,6 +123,7 @@ public class EnderecoServiceImp implements EnderecoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EnderecoResponse> listarTodos() {
         List<Endereco> enderecos = enderecoRepository.findAll();
         return enderecos.stream()
@@ -131,18 +132,21 @@ public class EnderecoServiceImp implements EnderecoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public EnderecoResponse buscarPorId(Long idEndereco) {
         return EnderecoResponse.of(enderecoRepository.findById(Objects.requireNonNull(idEndereco))
                 .orElseThrow(() -> new EntityNotFoundException("Endereco não encontrado para o id: " + idEndereco)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public EnderecoResponse buscarPorNumeroELogradouro(String numero, String logradouroNome) {
         return EnderecoResponse.of(enderecoRepository.findByNumeroAndLogradouroIgnoreCase(numero, logradouroNome)
                 .orElseThrow(() -> new EntityNotFoundException("Endereco não encontrado para os parametros: " + numero + " e " + logradouroNome)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EnderecoResponse> buscarPorFiltro(String bairro, String cepCodigo, String logradouro,
             TipoLogradouro tipoLogradouro) {
         List<Endereco> enderecos = enderecoRepository.findAll();

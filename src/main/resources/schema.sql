@@ -1,9 +1,10 @@
 -- ===========================================
 -- LIMPEZA
 -- ===========================================
+DROP TABLE IF EXISTS produtos;
 DROP TABLE IF EXISTS telefones;
-DROP TABLE IF EXISTS clientes;
 DROP TABLE IF EXISTS restaurantes;
+DROP TABLE IF EXISTS clientes;
 DROP TABLE IF EXISTS usuarios;
 DROP TABLE IF EXISTS enderecos;
 DROP TABLE IF EXISTS ceps;
@@ -98,10 +99,35 @@ CREATE TABLE telefones (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     ddd VARCHAR(3) NOT NULL,
     numero VARCHAR(15) NOT NULL,
-    tipo VARCHAR(20),
     ativo BOOLEAN DEFAULT TRUE,
     usuario_id BIGINT NOT NULL,
     tipo_usuario enum('CLIENTE', 'RESTAURANTE'),
     tipo_telefone enum('FIXO', 'CELULAR', 'WHATSAPP'),
     CONSTRAINT fk_telefone_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
+
+-- ===========================================
+-- PRODUTO (N:1 com Restaurante)
+-- ===========================================
+CREATE TABLE produtos (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(120) NOT NULL,
+    descricao VARCHAR(250),
+    quantidade BIGINT NOT NULL CHECK (quantidade >= 0),
+    preco DECIMAL(10,2) NOT NULL CHECK (preco >= 0),
+    categoria_produto enum('BEBIDAS', 'COMIDAS', 'SOBREMESAS') NOT NULL,
+    disponibilidade BOOLEAN DEFAULT FALSE,
+    data_cadastro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    restaurante_id BIGINT NOT NULL,
+    CONSTRAINT fk_produtos_restaurantes 
+        FOREIGN KEY (restaurante_id) REFERENCES restaurantes(id)
+        ON DELETE CASCADE
+);
+
+-- ===========================================
+-- ÍNDICES DE DESEMPENHO
+-- ===========================================
+CREATE INDEX idx_restaurantes_cnpj ON restaurantes(cnpj);
+CREATE INDEX idx_produtos_nome ON produtos(nome);
+CREATE INDEX idx_telefones_numero ON telefones(numero);
+CREATE INDEX idx_enderecos_cep ON enderecos(cep_id);

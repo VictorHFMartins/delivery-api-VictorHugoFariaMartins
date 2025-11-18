@@ -2,15 +2,20 @@ package com.deliverytech.delivery.domain.model;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
+import java.util.List;
 
 import com.deliverytech.delivery.domain.enums.CategoriaRestaurante;
 import com.deliverytech.delivery.domain.enums.EstadoRestaurante;
 import com.deliverytech.delivery.domain.enums.TipoUsuario;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.AssertTrue;
@@ -57,10 +62,20 @@ public class Restaurante extends Usuario {
     @Column(nullable = false)
     private EstadoRestaurante estado;
 
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Produto> produtos;
+
     @PrePersist
     public void definirEstado() {
         if (this.estado == null) {
-            this.estado = EstadoRestaurante.ABERTO;
+            if (LocalTime.now().isAfter(horarioAbertura)) {
+                this.estado = EstadoRestaurante.ABERTO;
+            }
+
+            if (LocalTime.now().isBefore(horarioFechamento)) {
+                this.estado = EstadoRestaurante.FECHADO;
+            }
         }
         if (tipoUsuario != null) {
             tipoUsuario = TipoUsuario.RESTAURANTE;

@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.deliverytech.delivery.api.dto.CepRequest;
 import com.deliverytech.delivery.api.dto.CepResponse;
@@ -17,7 +18,6 @@ import com.deliverytech.delivery.domain.repository.CepRepository;
 import com.deliverytech.delivery.domain.repository.CidadeRepository;
 import com.deliverytech.delivery.domain.services.CepService;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -98,6 +98,7 @@ public class CepServiceImp implements CepService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CepResponse buscarPorId(Long id) {
         Cep cep = cepRepository.findById(Objects.requireNonNull(id)).
                 orElseThrow(() -> new EntityNotFoundException("Cep não encontrado"));
@@ -105,6 +106,7 @@ public class CepServiceImp implements CepService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CepResponse buscarPorCodigo(String codigo) {
         Cep cep = cepRepository.findByCodigo(Objects.requireNonNull(codigo)).
                 orElseThrow(() -> new EntityNotFoundException("Cep não encontrado"));
@@ -112,6 +114,7 @@ public class CepServiceImp implements CepService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CepResponse> listarTodos() {
         List<Cep> ceps = cepRepository.findAll();
         return ceps.stream()
@@ -120,6 +123,7 @@ public class CepServiceImp implements CepService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CepResponse> listarPorCidadeNome(String nomeCidade) {
         List<Cep> ceps = cepRepository.findByCidadeNomeContainingIgnoreCase(nomeCidade);
 

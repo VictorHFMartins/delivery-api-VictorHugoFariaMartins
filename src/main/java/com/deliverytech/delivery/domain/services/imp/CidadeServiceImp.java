@@ -87,6 +87,7 @@ public class CidadeServiceImp implements CidadeService {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public CidadeResponse buscarPorId(Long id) {
 
         return CidadeResponse.of(cidadeRepository.findById(Objects.requireNonNull(id))
@@ -94,6 +95,7 @@ public class CidadeServiceImp implements CidadeService {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public List<CidadeResponse> listarTodos() {
         List<Cidade> cidades = cidadeRepository.findAll();
         return cidades.stream()
@@ -102,6 +104,7 @@ public class CidadeServiceImp implements CidadeService {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public List<CidadeResponse> buscarPorNomeContendo(String nome) {
 
         List<Cidade> cidades = cidadeRepository.findByNomeContainingIgnoreCase(nome);
@@ -111,6 +114,7 @@ public class CidadeServiceImp implements CidadeService {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public List<CidadeResponse> buscarCidadesPorEstadoUf(String estadoUf) {
 
         List<Cidade> cidades = cidadeRepository.findByEstadoUfIgnoreCase(estadoUf);

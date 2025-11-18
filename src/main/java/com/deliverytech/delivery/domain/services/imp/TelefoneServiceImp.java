@@ -117,6 +117,7 @@ public class TelefoneServiceImp implements TelefoneService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TelefoneResponse buscarTelefonePorId(long telefoneId) {
         Telefone telefone = telefoneRepository.findById(telefoneId).
                 orElseThrow(() -> new EntityNotFoundException("Telefone não encontrado"));
@@ -125,6 +126,7 @@ public class TelefoneServiceImp implements TelefoneService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TelefoneResponse> listarNumerosAtivos() {
         List<Telefone> telefone = telefoneRepository.findByAtivoTrue();
 
@@ -134,12 +136,14 @@ public class TelefoneServiceImp implements TelefoneService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TelefoneResponse> listarTodos() {
         List<Telefone> telefones = telefoneRepository.findAll();
         return telefones.stream().map(TelefoneResponse::of).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TelefoneResponse> buscarPorFiltro(String ddd, Long usuarioId, String numero, TipoUsuario tipoUsuario, TipoTelefone tipoTelefone) {
         List<Telefone> telefones = telefoneRepository.findAll();
 

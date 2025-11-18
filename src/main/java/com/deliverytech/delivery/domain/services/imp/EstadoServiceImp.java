@@ -85,6 +85,7 @@ public class EstadoServiceImp implements EstadoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public EstadoResponse buscarPorId(Long id) {
 
         return EstadoResponse.of(estadoRepository.findById(Objects.requireNonNull(id))
@@ -92,6 +93,7 @@ public class EstadoServiceImp implements EstadoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public EstadoResponse buscarPorUf(String uf) {
 
         return EstadoResponse.of(estadoRepository.findByUfIgnoreCase(uf)
@@ -99,6 +101,7 @@ public class EstadoServiceImp implements EstadoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EstadoResponse> listarTodos() {
         List<Estado> estados = estadoRepository.findAll();
 
@@ -108,6 +111,7 @@ public class EstadoServiceImp implements EstadoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EstadoResponse> listarPorNomeContendo(String nome) {
 
         List<Estado> estados = estadoRepository.findByNomeContainingIgnoreCase(nome);

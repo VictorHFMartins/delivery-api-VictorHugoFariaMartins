@@ -143,12 +143,14 @@ public class RestauranteServiceImp implements RestauranteService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public RestauranteResponse buscarPorId(Long restauranteId) {
         Restaurante restaurante = (Restaurante) usuarioValidator.validarUsuario(restauranteId);
         return RestauranteResponse.of(restaurante);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public RestauranteResponse buscarPorCnpj(String cnpj) {
         Restaurante restaurante = restauranteRepository.findByCnpjIgnoreCase(cnpj)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurante não encontrado para o cnpj: " + cnpj));
@@ -156,6 +158,7 @@ public class RestauranteServiceImp implements RestauranteService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<RestauranteResponse> listarTodos() {
         List<Restaurante> restaurantes = restauranteRepository.findAll();
         return restaurantes.stream()
@@ -164,6 +167,7 @@ public class RestauranteServiceImp implements RestauranteService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<RestauranteResponse> listarPorRankingTop5() {
         List<Restaurante> restaurantes = restauranteRepository.findTop5ByOrderByNomeAsc();
         return restaurantes.stream()
@@ -172,6 +176,7 @@ public class RestauranteServiceImp implements RestauranteService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<RestauranteResponse> buscarPorFiltro(
             String email,
             String numeroTelefone,

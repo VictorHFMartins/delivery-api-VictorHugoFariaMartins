@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.deliverytech.delivery.api.dto.ClienteRequest;
 import com.deliverytech.delivery.api.dto.ClienteResponse;
@@ -20,7 +21,6 @@ import com.deliverytech.delivery.domain.services.ClienteService;
 import com.deliverytech.delivery.domain.validator.EnderecoValidator;
 import com.deliverytech.delivery.domain.validator.UsuarioValidator;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -121,6 +121,7 @@ public class ClienteServiceImp implements ClienteService {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public ClienteResponse buscarPorId(long id) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Id não encontrado."));
@@ -128,6 +129,7 @@ public class ClienteServiceImp implements ClienteService {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public List<ClienteResponse> listarPorStatusAtivo() {
         List<Cliente> clientes = clienteRepository.findByStatusTrue();
 
@@ -137,6 +139,7 @@ public class ClienteServiceImp implements ClienteService {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public List<ClienteResponse> listarTodos() {
         List<Cliente> clientes = clienteRepository.findAll();
 
@@ -146,6 +149,7 @@ public class ClienteServiceImp implements ClienteService {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public List<ClienteResponse> buscarComFiltros(String nome, String email, String cep, String cidade, String estado, String telefone) {
 
         List<Cliente> clientes = clienteRepository.findAll();
