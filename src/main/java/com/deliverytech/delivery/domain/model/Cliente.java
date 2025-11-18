@@ -1,8 +1,13 @@
 package com.deliverytech.delivery.domain.model;
 
-import com.deliverytech.delivery.domain.enums.TipoUsuario;
+import java.util.List;
 
+import com.deliverytech.delivery.domain.enums.TipoUsuario;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
@@ -18,9 +23,13 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = true)
 public class Cliente extends Usuario {
 
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Pedido> pedidos;
+
     @PrePersist
     public void definirTipo() {
-        if (tipoUsuario != null) {
+        if (tipoUsuario == null) {
             tipoUsuario = TipoUsuario.CLIENTE;
         }
     }

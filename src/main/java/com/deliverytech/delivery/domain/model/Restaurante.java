@@ -66,6 +66,10 @@ public class Restaurante extends Usuario {
     @JsonIgnore
     private List<Produto> produtos;
 
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Pedido> pedidos;
+
     @PrePersist
     public void definirEstado() {
         if (this.estado == null) {
@@ -77,7 +81,7 @@ public class Restaurante extends Usuario {
                 this.estado = EstadoRestaurante.FECHADO;
             }
         }
-        if (tipoUsuario != null) {
+        if (tipoUsuario == null) {
             tipoUsuario = TipoUsuario.RESTAURANTE;
         }
     }
