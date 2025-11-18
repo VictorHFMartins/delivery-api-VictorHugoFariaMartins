@@ -19,8 +19,4 @@ public interface EstadoRepository extends JpaRepository<Estado, Long> {
 
     // Verifica estado por uf
     boolean existsByUfIgnoreCase(String uf);
-
-    // Busca estados por nome da cidade
-    Optional<Estado> findByCidadesNomeIgnoreCase(String nomeCidade);
-
 }

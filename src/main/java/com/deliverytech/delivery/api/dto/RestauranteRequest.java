@@ -20,7 +20,7 @@ public record RestauranteRequest(
         String email,
         
         @NotNull(message = "O id do telefone é obrigatório")
-        List<Long> telefoneId,
+        List<Long> telefoneIds,
         
         @NotNull(message = "Endereço é obrigatório")
         Long enderecoId,

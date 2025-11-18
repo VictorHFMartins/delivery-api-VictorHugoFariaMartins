@@ -80,18 +80,31 @@ public class EstadoServiceImp implements EstadoService {
     }
 
     @Override
-    public EstadoResponse buscarPorUf(String Uf) {
-
-        return EstadoResponse.of(estadoRepository.findByUfIgnoreCase(Uf)
-                .orElseThrow(() -> new EntityNotFoundException("Estado não encontrado para o UF: " + Uf)));
+    public void deletar(Long idEstado) {
+        estadoRepository.deleteById(Objects.requireNonNull(idEstado, "Estado não encontrado para o id: " + idEstado));
     }
 
     @Override
-    public EstadoResponse buscarPorCidade(String nomeCidade) {
+    public EstadoResponse buscarPorId(Long id) {
 
-        return EstadoResponse.of(estadoRepository.findByCidadesNomeIgnoreCase(nomeCidade)
-                .orElseThrow(() -> new EntityNotFoundException("Estado não encontrado para o UF: " + nomeCidade))
-        );
+        return EstadoResponse.of(estadoRepository.findById(Objects.requireNonNull(id))
+                .orElseThrow(() -> new EntityNotFoundException("Estado não encontrado para o id: " + id)));
+    }
+
+    @Override
+    public EstadoResponse buscarPorUf(String uf) {
+
+        return EstadoResponse.of(estadoRepository.findByUfIgnoreCase(uf)
+                .orElseThrow(() -> new EntityNotFoundException("Estado não encontrado para o UF: " + uf)));
+    }
+
+    @Override
+    public List<EstadoResponse> listarTodos() {
+        List<Estado> estados = estadoRepository.findAll();
+
+        return estados.stream()
+                .map(EstadoResponse::of)
+                .toList();
     }
 
     @Override

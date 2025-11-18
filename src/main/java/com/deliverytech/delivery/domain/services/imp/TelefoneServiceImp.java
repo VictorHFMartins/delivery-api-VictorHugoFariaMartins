@@ -13,6 +13,7 @@ import com.deliverytech.delivery.api.dto.TelefoneResponse;
 import com.deliverytech.delivery.api.dto.TelefoneUpdateRequest;
 import com.deliverytech.delivery.api.exceptions.BusinessException;
 import com.deliverytech.delivery.api.exceptions.EntityNotFoundException;
+import com.deliverytech.delivery.domain.enums.TipoTelefone;
 import com.deliverytech.delivery.domain.enums.TipoUsuario;
 import com.deliverytech.delivery.domain.model.Cliente;
 import com.deliverytech.delivery.domain.model.Restaurante;
@@ -63,7 +64,7 @@ public class TelefoneServiceImp implements TelefoneService {
     }
 
     @Override
-    public TelefoneResponse adicionar(Long usuarioId, TelefoneRequest dto) {
+    public TelefoneResponse criar(Long usuarioId, TelefoneRequest dto) {
         Usuario usuario = usuarioValidator.validarUsuario(usuarioId);
 
         Telefone telefone = buscarOuCriarTelefone(dto);
@@ -133,38 +134,38 @@ public class TelefoneServiceImp implements TelefoneService {
     }
 
     @Override
-    public List<TelefoneResponse> listarPorDdd(String ddd) {
-        List<Telefone> telefone = telefoneRepository.findByDdd(ddd);
-
-        return telefone.stream().
-                map(TelefoneResponse::of).
-                toList();
+    public List<TelefoneResponse> listarTodos() {
+        List<Telefone> telefones = telefoneRepository.findAll();
+        return telefones.stream().map(TelefoneResponse::of).toList();
     }
 
     @Override
-    public List<TelefoneResponse> listarPorUsuárioId(Long usuarioId) {
-        List<Telefone> telefone = telefoneRepository.findByUsuarioId(usuarioId);
+    public List<TelefoneResponse> buscarPorFiltro(String ddd, Long usuarioId, String numero, TipoUsuario tipoUsuario, TipoTelefone tipoTelefone) {
+        List<Telefone> telefones = telefoneRepository.findAll();
 
-        return telefone.stream().
-                map(TelefoneResponse::of).
-                toList();
-    }
+        if (ddd != null && !ddd.isBlank()) {
+            telefones = telefones.stream().filter(t -> t.getDdd().equalsIgnoreCase(ddd))
+                    .toList();
+        }
+        if (usuarioId != null) {
+            telefones = telefones.stream().filter(t -> t.getUsuario().getId().equals(usuarioId))
+                    .toList();
+        }
+        if (numero != null && !numero.isBlank()) {
+            telefones = telefones.stream().filter(t -> t.getNumero().equalsIgnoreCase(numero))
+                    .toList();
+        }
+        if (tipoUsuario != null) {
+            telefones = telefones.stream().filter(t -> t.getTipoUsuario().equals(tipoUsuario))
+                    .toList();
+        }
+        if (tipoTelefone != null) {
+            telefones = telefones.stream().filter(t -> t.getTipoTelefone().equals(tipoTelefone))
+                    .toList();
+        }
 
-    @Override
-    public List<TelefoneResponse> listarTelefonePorNumeroContendo(String Numero) {
-        List<Telefone> telefone = telefoneRepository.findByNumeroContaining(Numero);
-
-        return telefone.stream().
-                map(TelefoneResponse::of).
-                toList();
-    }
-
-    @Override
-    public List<TelefoneResponse> listarPorTipoUsuario(TipoUsuario tipoUsuario) {
-        List<Telefone> telefone = telefoneRepository.findByTipoUsuario(tipoUsuario);
-
-        return telefone.stream().
-                map(TelefoneResponse::of).
-                toList();
+        return telefones.stream()
+                .map(TelefoneResponse::of)
+                .toList();
     }
 }

@@ -69,7 +69,7 @@ public class EnderecoServiceImp implements EnderecoService {
     }
 
     @Override
-    public EnderecoResponse adicionar(Long usuarioId, EnderecoRequest dto) {
+    public EnderecoResponse criar(Long usuarioId, EnderecoRequest dto) {
         Usuario usuario = usuarioValidator.validarUsuario(usuarioId);
 
         Endereco endereco = buscarOuCriarEndereco(dto);
@@ -118,6 +118,19 @@ public class EnderecoServiceImp implements EnderecoService {
     }
 
     @Override
+    public void deletar(Long enderecoId) {
+        enderecoRepository.deleteById(Objects.requireNonNull(enderecoId, "Endereço não encontrado para o id: " + enderecoId));
+    }
+
+    @Override
+    public List<EnderecoResponse> listarTodos() {
+        List<Endereco> enderecos = enderecoRepository.findAll();
+        return enderecos.stream()
+                .map(EnderecoResponse::of)
+                .toList();
+    }
+
+    @Override
     public EnderecoResponse buscarPorId(Long idEndereco) {
         return EnderecoResponse.of(enderecoRepository.findById(Objects.requireNonNull(idEndereco))
                 .orElseThrow(() -> new EntityNotFoundException("Endereco não encontrado para o id: " + idEndereco)));
@@ -130,34 +143,30 @@ public class EnderecoServiceImp implements EnderecoService {
     }
 
     @Override
-    public List<EnderecoResponse> listarPorBairro(String bairroNome) {
-        List<Endereco> enderecos = enderecoRepository.findByBairroContainingIgnoreCase(bairroNome);
+    public List<EnderecoResponse> buscarPorFiltro(String bairro, String cepCodigo, String logradouro,
+            TipoLogradouro tipoLogradouro) {
+        List<Endereco> enderecos = enderecoRepository.findAll();
+
+        if (bairro != null && !bairro.isBlank()) {
+            enderecos = enderecos.stream().filter(e -> e.getBairro().toLowerCase().contains(bairro.toLowerCase()))
+                    .toList();
+        }
+        if (cepCodigo != null && !cepCodigo.isBlank()) {
+            enderecos = enderecos.stream().filter(e -> e.getCep().getCodigo().equalsIgnoreCase(cepCodigo))
+                    .toList();
+        }
+        if (logradouro != null && !logradouro.isBlank()) {
+            enderecos = enderecos.stream().filter(e -> e.getLogradouro().toLowerCase().contains(logradouro.toLowerCase()))
+                    .toList();
+        }
+        if (tipoLogradouro != null) {
+            enderecos = enderecos.stream().filter(e -> e.getTipoLogradouro().equals(tipoLogradouro))
+                    .toList();
+        }
+
         return enderecos.stream()
                 .map(EnderecoResponse::of)
                 .toList();
     }
 
-    @Override
-    public List<EnderecoResponse> listarPorCepCodigo(String CepCodigo) {
-        List<Endereco> enderecos = enderecoRepository.findByCepCodigoContainingIgnoreCase(CepCodigo);
-        return enderecos.stream()
-                .map(EnderecoResponse::of)
-                .toList();
-    }
-
-    @Override
-    public List<EnderecoResponse> listarPorLogradouro(String LogradouroNome) {
-        List<Endereco> enderecos = enderecoRepository.findByLogradouroContainingIgnoreCase(LogradouroNome);
-        return enderecos.stream()
-                .map(EnderecoResponse::of)
-                .toList();
-    }
-
-    @Override
-    public List<EnderecoResponse> listarPorTipoLogradouro(TipoLogradouro tipoLogradouro) {
-        List<Endereco> enderecos = enderecoRepository.findByTipoLogradouro(tipoLogradouro);
-        return enderecos.stream()
-                .map(EnderecoResponse::of)
-                .toList();
-    }
 }

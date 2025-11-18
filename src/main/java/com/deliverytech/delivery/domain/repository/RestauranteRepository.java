@@ -19,7 +19,7 @@ public interface RestauranteRepository extends JpaRepository<Restaurante, Long> 
     Optional<Restaurante> findByNomeContainingIgnoreCase(String nome);
 
     // Busca por cnpj
-    Optional<Restaurante> findByCnpj(String cnpj);
+    Optional<Restaurante> findByCnpjIgnoreCase(String cnpj);
 
     // Buscar restaurantes ativos
     List<Restaurante> findByStatusTrue();
@@ -44,5 +44,7 @@ public interface RestauranteRepository extends JpaRepository<Restaurante, Long> 
 
     // Top 5 restaurantes por nome (ordem alfabética)
     List<Restaurante> findTop5ByOrderByNomeAsc();
+
+    boolean existsByEmail(String email);
 
 }

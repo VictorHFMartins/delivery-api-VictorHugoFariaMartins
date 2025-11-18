@@ -43,7 +43,7 @@ public class CepServiceImp implements CepService {
         if (cep == null) {
             throw new BusinessException("Erro ao mapear endereco a partir do DTO");
         }
-        
+
         Cidade cidade = cidadeRepository.findById(Objects.requireNonNull(dto.cidadeId()))
                 .orElseThrow(() -> new EntityNotFoundException("Cidade não encontrada para o id: " + dto.cidadeId()));
 
@@ -93,21 +93,34 @@ public class CepServiceImp implements CepService {
     }
 
     @Override
-    public CepResponse buscarCepPorId(Long id) {
+    public void deletar(Long cepId) {
+        cepRepository.deleteById(Objects.requireNonNull(cepId, "Cep não encontrado para o id: " + cepId));
+    }
+
+    @Override
+    public CepResponse buscarPorId(Long id) {
         Cep cep = cepRepository.findById(Objects.requireNonNull(id)).
                 orElseThrow(() -> new EntityNotFoundException("Cep não encontrado"));
         return CepResponse.of(cep);
     }
 
     @Override
-    public CepResponse buscarCepPorCodigo(String codigo) {
+    public CepResponse buscarPorCodigo(String codigo) {
         Cep cep = cepRepository.findByCodigo(Objects.requireNonNull(codigo)).
                 orElseThrow(() -> new EntityNotFoundException("Cep não encontrado"));
         return CepResponse.of(cep);
     }
 
     @Override
-    public List<CepResponse> listarCepsPorCidadeNome(String nomeCidade) {
+    public List<CepResponse> listarTodos() {
+        List<Cep> ceps = cepRepository.findAll();
+        return ceps.stream()
+                .map(CepResponse::of)
+                .toList();
+    }
+
+    @Override
+    public List<CepResponse> listarPorCidadeNome(String nomeCidade) {
         List<Cep> ceps = cepRepository.findByCidadeNomeContainingIgnoreCase(nomeCidade);
 
         return ceps.stream()

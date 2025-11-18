@@ -1,5 +1,6 @@
 package com.deliverytech.delivery.api.dto;
 
+import com.deliverytech.delivery.domain.enums.TipoTelefone;
 import com.deliverytech.delivery.domain.enums.TipoUsuario;
 import com.deliverytech.delivery.domain.model.Telefone;
 
@@ -9,6 +10,7 @@ public record TelefoneResponse(
         String numero,
         boolean ativo,
         TipoUsuario tipoUsuario,
+        TipoTelefone tipoTelefone,
         UsuarioResponse usuario
         ) {
 
@@ -19,6 +21,7 @@ public record TelefoneResponse(
                 t.getNumero(),
                 t.isAtivo(),
                 t.getTipoUsuario(),
+                t.getTipoTelefone(),
                 t.getUsuario() != null ? UsuarioResponse.of(t.getUsuario()) : null);
     }
 }

@@ -82,6 +82,11 @@ public class CidadeServiceImp implements CidadeService {
     }
 
     @Override
+    public void deletar(Long cidadeId) {
+        cidadeRepository.deleteById(Objects.requireNonNull(cidadeId, "Cidade não encontrada para o id: " + cidadeId));
+    }
+
+    @Override
     public CidadeResponse buscarPorId(Long id) {
 
         return CidadeResponse.of(cidadeRepository.findById(Objects.requireNonNull(id))
@@ -89,10 +94,11 @@ public class CidadeServiceImp implements CidadeService {
     }
 
     @Override
-    public CidadeResponse buscarCidadePorEstado(String nome, String estadoUf) {
-
-        return CidadeResponse.of(cidadeRepository.findByNomeIgnoreCaseAndEstadoUfIgnoreCase(nome, estadoUf)
-                .orElseThrow(() -> new BusinessException("Cidade não encontrada para os parâmentros:" + nome + "/" + estadoUf)));
+    public List<CidadeResponse> listarTodos() {
+        List<Cidade> cidades = cidadeRepository.findAll();
+        return cidades.stream()
+                .map(CidadeResponse::of)
+                .toList();
     }
 
     @Override
@@ -112,14 +118,4 @@ public class CidadeServiceImp implements CidadeService {
                 .map(CidadeResponse::of)
                 .toList();
     }
-
-    @Override
-    public List<CidadeResponse> buscarPorCepCodigoContendo(String cepCodigo) {
-
-        List<Cidade> cidades = cidadeRepository.findByCepsCodigoContainingIgnoreCase(cepCodigo);
-        return cidades.stream()
-                .map(CidadeResponse::of)
-                .toList();
-    }
-
 }

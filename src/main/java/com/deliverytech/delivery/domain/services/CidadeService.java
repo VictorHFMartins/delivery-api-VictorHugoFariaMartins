@@ -16,12 +16,12 @@ public interface CidadeService {
 
     CidadeResponse buscarPorId(Long cidadeId);
 
-    CidadeResponse buscarCidadePorEstado(String nomeEstado, String estadoUf);
+    List<CidadeResponse> listarTodos();
 
     List<CidadeResponse> buscarPorNomeContendo(String nomeCidade);
 
     List<CidadeResponse> buscarCidadesPorEstadoUf(String estadoUf);
 
-    List<CidadeResponse> buscarPorCepCodigoContendo(String cepCodigo);
+    void deletar(Long id);
 
 }

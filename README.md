@@ -57,15 +57,30 @@ API: http://localhost:8080/health
 Console H2: http://localhost:8080/h2-console
 
 ## 📋 Endpoints
--GET	/health	- Verifica o status da aplicação
--GET	/health/info	- Exibe informações da aplicação
--GET	/clientes	- Lista todos os clientes cadastrados
--GET	/clientes/{id}	- Busca cliente por ID
--POST	/clientes	- Cadastra um novo cliente
--PUT	/clientes/{id} - Atualiza dados de um cliente
--PATCH	/clientes/inativar/{id} -	Inativa um cliente
--DELETE	/clientes/{id} -	Exclui um cliente
--GET	/h2-console	- Acessa o console do banco em memória
+
+**Health**
+- GET	/health	- Verifica o status da aplicação
+- GET	/health/info	- Exibe informações da aplicação
+
+**Banco de dados**
+- GET	/h2-console	- Acessa o console do banco em memória
+
+**Cliente**
+- GET	/clientes	- Lista todos os clientes cadastrados
+- GET	/clientes/{id}	- Busca cliente por ID
+- GET	/buscar?value=	- Busca cliente por parâmetros (possiveis valores para value = nome, email, cep, cidade, estado, telefone)
+- POST	/clientes	- Cadastra um novo cliente
+- PUT	/clientes/{id} - Atualiza dados de um cliente
+- PATCH	/clientes/inativar/{id} -	Inativa um cliente
+- DELETE	/clientes/{id} -	Exclui um cliente
+
+**Estados**
+- POST /estados -
+- PUT /estados/{id} - 
+- DELETE /estados/{id} - 
+- GET /estados -
+- GET /estados/{uf} -
+- GET /estados/cidade -
 
 ## 🗄️ Banco de Dados
 

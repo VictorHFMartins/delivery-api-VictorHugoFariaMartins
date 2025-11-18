@@ -1,20 +1,25 @@
 package com.deliverytech.delivery.api.dto;
 
+import com.deliverytech.delivery.domain.enums.TipoTelefone;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record TelefoneRequest(
-        
         @NotNull(message = "O id do usuário é obrigatório")
         Long usuarioId,
-
-        @NotBlank(message = "O DDD é obrigatório") 
+        
+        @NotBlank(message = "O DDD é obrigatório")
         @Size(min = 2, max = 2, message = "O DDD deve ter exatamente 2 dígitos")
         String ddd,
         
         @NotBlank(message = "O numero é obrigatorio")
         @Pattern(regexp = "\\d{8,9}", message = "O número deve conter 8 ou 9 dígitos")
-        String numero) {
+        String numero,
+        
+        @NotNull(message = "O Tipo do telefone é obrigatório")
+        TipoTelefone tipoTelefone) {
+
 }

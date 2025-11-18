@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.deliverytech.delivery.domain.enums.TipoTelefone;
 import com.deliverytech.delivery.domain.enums.TipoUsuario;
 import com.deliverytech.delivery.domain.model.Telefone;
 
@@ -29,7 +30,10 @@ public interface TelefoneRepository extends JpaRepository<Telefone, Long> {
 
     // Lista telefones por tipo de usuário
     List<Telefone> findByTipoUsuario(TipoUsuario tipoUsuario);
-    
+
+    // Lista telefones por tipo telefone (CELULAR, FIXO, WHATSAPP)
+    List<Telefone> findByTipoTelefone(TipoTelefone tipoTelefone);
+
     // Busca por telefone específico
     Optional<Telefone> findByDddAndNumero(String ddd, String Numero);
 

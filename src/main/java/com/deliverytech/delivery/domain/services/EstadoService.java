@@ -14,10 +14,14 @@ public interface EstadoService {
 
     EstadoResponse alterar(Long idEstado, EstadoRequest estadoDto);
 
+    EstadoResponse buscarPorId(Long id);
+
     EstadoResponse buscarPorUf(String ufEstado);
 
-    EstadoResponse buscarPorCidade(String nomeCidade);
-
     List<EstadoResponse> listarPorNomeContendo(String nomeEstado);
+
+    void deletar(Long id);
+
+    List<EstadoResponse> listarTodos();
 
 }

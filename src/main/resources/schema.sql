@@ -102,5 +102,6 @@ CREATE TABLE telefones (
     ativo BOOLEAN DEFAULT TRUE,
     usuario_id BIGINT NOT NULL,
     tipo_usuario enum('CLIENTE', 'RESTAURANTE'),
+    tipo_telefone enum('FIXO', 'CELULAR', 'WHATSAPP'),
     CONSTRAINT fk_telefone_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );

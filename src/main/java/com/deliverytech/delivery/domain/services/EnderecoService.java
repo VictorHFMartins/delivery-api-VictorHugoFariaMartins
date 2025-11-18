@@ -12,20 +12,18 @@ public interface EnderecoService {
 
     Endereco buscarOuCriarEndereco(EnderecoRequest enderecoDto);
 
-    EnderecoResponse adicionar(Long usuarioId, EnderecoRequest enderecoDto);
+    EnderecoResponse criar(Long usuarioId, EnderecoRequest enderecoDto);
 
     EnderecoResponse atualizar(Long usuarioId, Long enderecoId, EnderecoUpdateRequest enderecoUpdateDto);
 
     EnderecoResponse buscarPorId(Long idEndereco);
 
-    List<EnderecoResponse> listarPorBairro(String bairroNome);
+    List<EnderecoResponse> listarTodos();
 
-    List<EnderecoResponse> listarPorCepCodigo(String cepCodigo);
-
-    List<EnderecoResponse> listarPorLogradouro(String logradouroNome);
-
-    List<EnderecoResponse> listarPorTipoLogradouro(TipoLogradouro tipoLogradouro);
+    List<EnderecoResponse> buscarPorFiltro(String bairro, String cepCodigo, String logradouro, TipoLogradouro tipoLogradouro);
 
     EnderecoResponse buscarPorNumeroELogradouro(String numeroEndereco, String logradouroNome);
+
+    void deletar(Long id);
 
 }

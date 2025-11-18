@@ -50,7 +50,7 @@ public class ClienteController {
     }
 
     @PatchMapping("/inativar/{id}")
-    public ResponseEntity<ClienteResponse> inativar(@PathVariable Long id) {
+    public ResponseEntity<ClienteResponse> ativarDesativar(@PathVariable Long id) {
         ClienteResponse cliente = clienteService.ativarDesativar(id);
         return ResponseEntity.ok(cliente);
     }
@@ -73,12 +73,12 @@ public class ClienteController {
         return ResponseEntity.ok(clientes);
     }
 
-    @GetMapping("/todos")
+    @GetMapping
     public ResponseEntity<List<ClienteResponse>> listarTodos() {
         return ResponseEntity.ok(clienteService.listarTodos());
     }
 
-    @GetMapping
+    @GetMapping("/buscar")
     public ResponseEntity<List<ClienteResponse>> buscar(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String email,

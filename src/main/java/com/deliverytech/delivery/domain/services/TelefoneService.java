@@ -5,6 +5,7 @@ import java.util.List;
 import com.deliverytech.delivery.api.dto.TelefoneRequest;
 import com.deliverytech.delivery.api.dto.TelefoneResponse;
 import com.deliverytech.delivery.api.dto.TelefoneUpdateRequest;
+import com.deliverytech.delivery.domain.enums.TipoTelefone;
 import com.deliverytech.delivery.domain.enums.TipoUsuario;
 import com.deliverytech.delivery.domain.model.Telefone;
 
@@ -14,7 +15,7 @@ public interface TelefoneService {
 
     void remover(Long usuarioId, Long telefoneId);
 
-    TelefoneResponse adicionar(Long usuarioId, TelefoneRequest telefoneDto);
+    TelefoneResponse criar(Long usuarioId, TelefoneRequest telefoneDto);
 
     TelefoneResponse atualizar(Long usuarioId, Long telefoneId, TelefoneUpdateRequest telefoneUpdateDto);
 
@@ -22,12 +23,8 @@ public interface TelefoneService {
 
     List<TelefoneResponse> listarNumerosAtivos();
 
-    List<TelefoneResponse> listarPorDdd(String dddTelefone);
+    List<TelefoneResponse> listarTodos();
 
-    List<TelefoneResponse> listarPorUsuárioId(Long usuarioId);
-
-    List<TelefoneResponse> listarTelefonePorNumeroContendo(String numeroTelefone);
-
-    List<TelefoneResponse> listarPorTipoUsuario(TipoUsuario tipoUsuario);
+    List<TelefoneResponse> buscarPorFiltro(String ddd, Long usuarioId, String numero,  TipoUsuario tipoUsuario, TipoTelefone tipoTelefone);
 
 }

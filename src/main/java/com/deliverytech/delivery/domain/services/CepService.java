@@ -14,10 +14,14 @@ public interface CepService {
 
     CepResponse alterar(Long id, CepRequest cepDto);
 
-    CepResponse buscarCepPorId(Long id);
+    CepResponse buscarPorId(Long id);
 
-    CepResponse buscarCepPorCodigo(String codigo);
+    CepResponse buscarPorCodigo(String codigo);
 
-    List<CepResponse> listarCepsPorCidadeNome(String nomeCidade);
+    List<CepResponse> listarTodos();
+
+    List<CepResponse> listarPorCidadeNome(String nomeCidade);
+
+    void deletar(Long id);
 
 }

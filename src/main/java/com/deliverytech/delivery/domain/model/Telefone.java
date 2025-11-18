@@ -1,5 +1,6 @@
 package com.deliverytech.delivery.domain.model;
 
+import com.deliverytech.delivery.domain.enums.TipoTelefone;
 import com.deliverytech.delivery.domain.enums.TipoUsuario;
 
 import jakarta.persistence.Column;
@@ -51,6 +52,10 @@ public class Telefone {
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_usuario", nullable = true)
     private TipoUsuario tipoUsuario;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_telefone", nullable = true)
+    private TipoTelefone tipoTelefone;
 
     @PrePersist
     public void prePersist() {
