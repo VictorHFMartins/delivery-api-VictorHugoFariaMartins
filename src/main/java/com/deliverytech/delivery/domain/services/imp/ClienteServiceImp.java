@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,12 +12,11 @@ import com.deliverytech.delivery.api.dto.ClienteResponse;
 import com.deliverytech.delivery.api.exceptions.BusinessException;
 import com.deliverytech.delivery.api.exceptions.EntityNotFoundException;
 import com.deliverytech.delivery.domain.model.Cliente;
-import com.deliverytech.delivery.domain.model.Endereco;
 import com.deliverytech.delivery.domain.model.Telefone;
 import com.deliverytech.delivery.domain.repository.ClienteRepository;
-import com.deliverytech.delivery.domain.repository.TelefoneRepository;
 import com.deliverytech.delivery.domain.services.ClienteService;
 import com.deliverytech.delivery.domain.validator.EnderecoValidator;
+import com.deliverytech.delivery.domain.validator.TelefoneValidator;
 import com.deliverytech.delivery.domain.validator.UsuarioValidator;
 
 import lombok.RequiredArgsConstructor;
@@ -29,73 +27,91 @@ import lombok.RequiredArgsConstructor;
 public class ClienteServiceImp implements ClienteService {
 
     private final ClienteRepository clienteRepository;
-    private final TelefoneRepository telefoneRepository;
 
     private final UsuarioValidator usuarioValidator;
+    private final TelefoneValidator telefoneValidator;
     private final EnderecoValidator enderecoValidator;
-
-    private final ModelMapper modelMapper;
 
     @Override
     public ClienteResponse criar(ClienteRequest dto) {
         if (clienteRepository.existsByEmail(dto.email())) {
-            throw new BusinessException("E-mail já cadastrado" + dto.email());
+            throw new BusinessException("E-mail já cadastrado: " + dto.email());
         }
 
-        Cliente cliente = modelMapper.map(dto, Cliente.class);
-        if (cliente == null) {
-            throw new BusinessException("Erro ao mapear Cliente a partir do DTO");
-        }
+        var cep = enderecoValidator.validarOuCriarCep(dto.endereco().cepCodigo(), dto.endereco().cidadeId());
+        var endereco = enderecoValidator.criarEndereco(dto.endereco(), cep);
+
+        Cliente cliente = new Cliente();
+        cliente.setNome(dto.nome());
+        cliente.setEmail(dto.email());
+        cliente.setEndereco(endereco);
+        cliente.setStatus(true);
+
+        var telefones = dto.telefones().stream()
+                .map(t -> {
+                    Telefone tel = new Telefone();
+                    tel.setDdd(t.ddd());
+                    tel.setNumero(telefoneValidator.formatarNumeroTelefone(t.numero()));
+                    tel.setTipoTelefone(t.tipoTelefone());
+                    tel.setUsuario(cliente);
+                    tel.setAtivo(true);
+                    return tel;
+                })
+                .collect(Collectors.toList());
+
+        cliente.setTelefones(telefones);
 
         Cliente clienteSalvo = clienteRepository.save(cliente);
-
-        ClienteResponse response = modelMapper.map(clienteSalvo, ClienteResponse.class);
-        if (response == null) {
-            throw new BusinessException("Erro ao mapear Cliente para ClienteResponse");
-        }
-
-        return response;
+        return ClienteResponse.of(clienteSalvo);
     }
 
     @Override
     public ClienteResponse atualizar(Long id, ClienteRequest dto) {
         Cliente clienteExistente = (Cliente) usuarioValidator.validarUsuario(id);
 
-        if (dto.email() == null || dto.email().isEmpty()) {
-            throw new BusinessException("E-mail não pode ser vazio");
+        if (dto.nome() == null || dto.nome().isBlank()) {
+            throw new BusinessException("O nome não pode ser vazio");
         }
-        if (!clienteExistente.getEmail().equals(dto.email())
+        if (dto.email() == null || dto.email().isBlank()) {
+            throw new BusinessException("O e-mail não pode ser vazio");
+        }
+        if (!clienteExistente.getEmail().equalsIgnoreCase(dto.email())
                 && clienteRepository.existsByEmail(dto.email())) {
             throw new BusinessException("E-mail já cadastrado");
-        }
-        if (dto.nome() == null || dto.nome().isEmpty()) {
-            throw new BusinessException("Nome não pode ser vazio");
-        }
-        if (dto.telefoneIds() == null) {
-            throw new BusinessException("Deve existir ao menos um telefone");
-        }
-        if (dto.enderecoId() == null) {
-            throw new BusinessException("EndereçoId não pode ser vazio");
         }
 
         clienteExistente.setNome(dto.nome());
         clienteExistente.setEmail(dto.email());
 
-        if (!dto.telefoneIds().isEmpty()) {
-
-            clienteExistente.getTelefones().clear();
-            List<Telefone> novosTelefones = dto.telefoneIds().stream()
-                    .filter(idTel -> idTel != null)
-                    .map(idTel -> telefoneRepository.findById(Objects.requireNonNull(idTel))
-                    .orElseThrow(() -> new EntityNotFoundException("Telefone não encontrado: " + idTel)))
-                    .peek(t -> t.setUsuario(clienteExistente))
-                    .collect(Collectors.toList());
-
-            clienteExistente.getTelefones().addAll(novosTelefones);
+        if (dto.telefones().isEmpty()) {
+            throw new BusinessException("Deve existir ao menos um telefone");
         }
-        Endereco endereco = enderecoValidator.validarEndereco(dto.enderecoId());
 
-        clienteExistente.setEndereco(endereco);
+        clienteExistente.getTelefones().clear();
+
+        List<Telefone> novosTelefones = dto.telefones().stream()
+                .map(t -> {
+                    Telefone telefone = new Telefone();
+                    telefone.setDdd(t.ddd());
+                    telefone.setNumero(telefoneValidator.formatarNumeroTelefone(t.numero()));
+                    telefone.setAtivo(true);
+                    telefone.setTipoTelefone(t.tipoTelefone());
+                    telefone.setUsuario(clienteExistente);
+                    return telefone;
+                })
+                .collect(Collectors.toList());
+
+        clienteExistente.getTelefones().addAll(novosTelefones);
+
+        if (dto.endereco() == null) {
+            throw new BusinessException("Endereço é obrigatório");
+        }
+
+        var cep = enderecoValidator.validarOuCriarCep(dto.endereco().cepCodigo(), dto.endereco().cidadeId());
+        var novoEndereco = enderecoValidator.criarEndereco(dto.endereco(), cep);
+
+        clienteExistente.setEndereco(novoEndereco);
+
         clienteRepository.save(clienteExistente);
 
         return ClienteResponse.of(clienteExistente);
@@ -121,7 +137,7 @@ public class ClienteServiceImp implements ClienteService {
     }
 
     @Override
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public ClienteResponse buscarPorId(long id) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Id não encontrado."));
@@ -129,7 +145,7 @@ public class ClienteServiceImp implements ClienteService {
     }
 
     @Override
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public List<ClienteResponse> listarPorStatusAtivo() {
         List<Cliente> clientes = clienteRepository.findByStatusTrue();
 
@@ -139,7 +155,7 @@ public class ClienteServiceImp implements ClienteService {
     }
 
     @Override
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public List<ClienteResponse> listarTodos() {
         List<Cliente> clientes = clienteRepository.findAll();
 
@@ -149,7 +165,7 @@ public class ClienteServiceImp implements ClienteService {
     }
 
     @Override
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public List<ClienteResponse> buscarComFiltros(String nome, String email, String cep, String cidade, String estado, String telefone) {
 
         List<Cliente> clientes = clienteRepository.findAll();

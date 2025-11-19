@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +14,12 @@ import com.deliverytech.delivery.api.dto.RestauranteResponse;
 import com.deliverytech.delivery.api.exceptions.BusinessException;
 import com.deliverytech.delivery.api.exceptions.EntityNotFoundException;
 import com.deliverytech.delivery.domain.enums.CategoriaRestaurante;
-import com.deliverytech.delivery.domain.model.Endereco;
 import com.deliverytech.delivery.domain.model.Restaurante;
 import com.deliverytech.delivery.domain.model.Telefone;
 import com.deliverytech.delivery.domain.repository.RestauranteRepository;
-import com.deliverytech.delivery.domain.repository.TelefoneRepository;
 import com.deliverytech.delivery.domain.services.RestauranteService;
 import com.deliverytech.delivery.domain.validator.EnderecoValidator;
+import com.deliverytech.delivery.domain.validator.TelefoneValidator;
 import com.deliverytech.delivery.domain.validator.UsuarioValidator;
 
 import lombok.AllArgsConstructor;
@@ -32,32 +30,47 @@ import lombok.AllArgsConstructor;
 public class RestauranteServiceImp implements RestauranteService {
 
     private final RestauranteRepository restauranteRepository;
-    private final TelefoneRepository telefoneRepository;
 
     private final UsuarioValidator usuarioValidator;
     private final EnderecoValidator enderecoValidator;
-
-    private final ModelMapper modelMapper;
+    private final TelefoneValidator telefoneValidator;
 
     @Override
     public RestauranteResponse criar(RestauranteRequest dto) {
+
         if (restauranteRepository.existsByEmail(dto.email())) {
             throw new BusinessException("E-mail já cadastrado" + dto.email());
         }
+        var cep = enderecoValidator.validarOuCriarCep(dto.endereco().cepCodigo(), dto.endereco().cidadeId());
+        var endereco = enderecoValidator.criarEndereco(dto.endereco(), cep);
 
-        Restaurante restaurante = modelMapper.map(dto, Restaurante.class);
-        if (restaurante == null) {
-            throw new BusinessException("Erro ao mapear restaurante a partir do DTO");
-        }
+        Restaurante restaurante = new Restaurante();
+        restaurante.setNome(dto.nome());
+        restaurante.setCnpj(dto.cnpj());
+        restaurante.setEmail(dto.email());
+        restaurante.setEndereco(endereco);
+        restaurante.setCategoria(dto.classe());
+        restaurante.setEstado(dto.estado());
+        restaurante.setHorarioAbertura(dto.horarioAbertura());
+        restaurante.setHorarioFechamento(dto.horarioFechamento());
+        restaurante.setTaxaEntrega(dto.taxaEntrega());
 
-        Restaurante retauranteSalvo = restauranteRepository.save(restaurante);
+        var telefones = dto.telefones().stream()
+                .map(t -> {
+                    Telefone tel = new Telefone();
+                    tel.setDdd(t.ddd());
+                    tel.setNumero(telefoneValidator.formatarNumeroTelefone(t.numero()));
+                    tel.setTipoTelefone(t.tipoTelefone());
+                    tel.setUsuario(restaurante);
+                    tel.setAtivo(true);
+                    return tel;
+                })
+                .collect(Collectors.toList());
 
-        RestauranteResponse response = modelMapper.map(retauranteSalvo, RestauranteResponse.class);
-        if (response == null) {
-            throw new BusinessException("Erro ao mapear Restaurante para RestauranteResponse");
-        }
+        restaurante.setTelefones(telefones);
 
-        return response;
+        Restaurante restauranteSalvo = restauranteRepository.save(restaurante);
+        return RestauranteResponse.of(restauranteSalvo);
     }
 
     @Override
@@ -74,10 +87,10 @@ public class RestauranteServiceImp implements RestauranteService {
         if (dto.nome() == null || dto.nome().isEmpty()) {
             throw new BusinessException("Nome não pode ser vazio");
         }
-        if (dto.telefoneIds() == null) {
+        if (dto.telefones().isEmpty()) {
             throw new BusinessException("Deve existir ao menos um telefone");
         }
-        if (dto.enderecoId() == null) {
+        if (dto.endereco() == null) {
             throw new BusinessException("EndereçoId não pode ser vazio");
         }
         if (dto.cnpj() == null) {
@@ -102,21 +115,34 @@ public class RestauranteServiceImp implements RestauranteService {
         restauranteExistente.setNome(dto.nome());
         restauranteExistente.setEmail(dto.email());
 
-        if (!dto.telefoneIds().isEmpty()) {
-
-            restauranteExistente.getTelefones().clear();
-            List<Telefone> novosTelefones = dto.telefoneIds().stream()
-                    .filter(idTel -> idTel != null)
-                    .map(idTel -> telefoneRepository.findById(Objects.requireNonNull(idTel))
-                    .orElseThrow(() -> new EntityNotFoundException("Telefone não encontrado: " + idTel)))
-                    .peek(t -> t.setUsuario(restauranteExistente))
-                    .collect(Collectors.toList());
-
-            restauranteExistente.getTelefones().addAll(novosTelefones);
+        if (dto.telefones().isEmpty()) {
+            throw new BusinessException("Deve existir ao menos um telefone");
         }
-        Endereco endereco = enderecoValidator.validarEndereco(dto.enderecoId());
 
-        restauranteExistente.setEndereco(endereco);
+        restauranteExistente.getTelefones().clear();
+
+        List<Telefone> novosTelefones = dto.telefones().stream()
+                .map(t -> {
+                    Telefone telefone = new Telefone();
+                    telefone.setDdd(t.ddd());
+                    telefone.setNumero(telefoneValidator.formatarNumeroTelefone(t.numero()));
+                    telefone.setAtivo(true);
+                    telefone.setTipoTelefone(t.tipoTelefone());
+                    telefone.setUsuario(restauranteExistente);
+                    return telefone;
+                })
+                .collect(Collectors.toList());
+
+        restauranteExistente.getTelefones().addAll(novosTelefones);
+
+        if (dto.endereco() == null) {
+            throw new BusinessException("Endereço é obrigatório");
+        }
+
+        var cep = enderecoValidator.validarOuCriarCep(dto.endereco().cepCodigo(), dto.endereco().cidadeId());
+        var novoEndereco = enderecoValidator.criarEndereco(dto.endereco(), cep);
+
+        restauranteExistente.setEndereco(novoEndereco);
         restauranteExistente.setCnpj(dto.cnpj());
         restauranteExistente.setCategoria(dto.classe());
         restauranteExistente.setEstado(dto.estado());
@@ -181,7 +207,7 @@ public class RestauranteServiceImp implements RestauranteService {
             String email,
             String numeroTelefone,
             BigDecimal taxaEntrega,
-            String nomeRestaurante,
+            String nome,
             LocalTime horarioAbertura,
             LocalTime horarioFechamento,
             CategoriaRestaurante categoriaRestaurante) {
@@ -212,12 +238,12 @@ public class RestauranteServiceImp implements RestauranteService {
         } else {
             System.out.println("taxaEntrega não encontrado para taxa: " + taxaEntrega);
         }
-        if (nomeRestaurante != null && !nomeRestaurante.isBlank()) {
+        if (nome != null && !nome.isBlank()) {
             restaurantes = restaurantes.stream()
-                    .filter(r -> r.getNome().equalsIgnoreCase(nomeRestaurante))
+                    .filter(r -> r.getNome().contains(nome))
                     .toList();
         } else {
-            System.out.println("nomeRestaurante não encontrado para nome: " + nomeRestaurante);
+            System.out.println("nomeRestaurante não encontrado para nome: " + nome);
         }
         if (horarioAbertura != null) {
             restaurantes = restaurantes.stream()

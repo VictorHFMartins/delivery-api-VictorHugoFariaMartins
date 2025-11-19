@@ -1,0 +1,250 @@
+{
+  "info": {
+    "name": "Delivery Tech API",
+    "_postman_id": "delivery-tech-api-collection",
+    "description": "Coleção de endpoints para a API Delivery Tech (Spring Boot + Java 21).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Listar todos os clientes",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/clientes"
+          }
+        },
+        {
+          "name": "Buscar cliente por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/clientes/1"
+          }
+        },
+        {
+          "name": "Cadastrar novo cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Carlos Silva\",\n  \"email\": \"carlos@cliente.com\",\n  \"enderecoId\": 1\n}"
+            },
+            "url": "{{base_url}}/clientes"
+          }
+        },
+        {
+          "name": "Atualizar cliente",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Carlos Silva Jr\",\n  \"email\": \"carlosjr@cliente.com\"\n}"
+            },
+            "url": "{{base_url}}/clientes/1"
+          }
+        },
+        {
+          "name": "Inativar cliente",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/clientes/inativar/1"
+          }
+        },
+        {
+          "name": "Excluir cliente",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/clientes/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Restaurantes",
+      "item": [
+        {
+          "name": "Listar todos os restaurantes",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/restaurantes"
+          }
+        },
+        {
+          "name": "Buscar restaurante por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/restaurantes/4"
+          }
+        },
+        {
+          "name": "Buscar restaurante por CNPJ",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/restaurantes/cnpj/12.345.678-0001-99"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Produtos",
+      "item": [
+        {
+          "name": "Listar produtos",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/produtos"
+          }
+        },
+        {
+          "name": "Buscar produto por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/produtos/1"
+          }
+        },
+        {
+          "name": "Cadastrar novo produto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Pizza de Calabresa\",\n  \"descricao\": \"Massa fina e crocante\",\n  \"quantidade\": 10,\n  \"preco\": 42.50,\n  \"categoriaProduto\": \"COMIDAS\",\n  \"disponibilidade\": true\n}"
+            },
+            "url": "{{base_url}}/produtos/5"
+          }
+        },
+        {
+          "name": "Atualizar produto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Pizza Quatro Queijos\",\n  \"preco\": 48.00\n}"
+            },
+            "url": "{{base_url}}/produtos/1"
+          }
+        },
+        {
+          "name": "Alterar disponibilidade",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/produtos/1/disponibilidade"
+          }
+        },
+        {
+          "name": "Excluir produto",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/produtos/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pedidos",
+      "item": [
+        {
+          "name": "Listar todos os pedidos",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/pedidos"
+          }
+        },
+        {
+          "name": "Buscar pedido por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/pedidos/1"
+          }
+        },
+        {
+          "name": "Cadastrar novo pedido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": 1,\n  \"restauranteId\": 4,\n  \"itens\": [\n    {\"produtoId\": 1, \"quantidade\": 2},\n    {\"produtoId\": 3, \"quantidade\": 1}\n  ],\n  \"observacoes\": \"Sem cebola\"\n}"
+            },
+            "url": "{{base_url}}/pedidos"
+          }
+        },
+        {
+          "name": "Atualizar pedido",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": 2,\n  \"restauranteId\": 5,\n  \"itens\": [\n    {\"produtoId\": 4, \"quantidade\": 1}\n  ],\n  \"observacoes\": \"Trocar bebida por suco\"\n}"
+            },
+            "url": "{{base_url}}/pedidos/1"
+          }
+        },
+        {
+          "name": "Atualizar status",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/pedidos/1?statusPedido=CONFIRMADO"
+          }
+        },
+        {
+          "name": "Cancelar pedido",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/pedidos/cancelar?idPedido=1"
+          }
+        },
+        {
+          "name": "Excluir pedido",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/pedidos/1"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    }
+  ]
+}

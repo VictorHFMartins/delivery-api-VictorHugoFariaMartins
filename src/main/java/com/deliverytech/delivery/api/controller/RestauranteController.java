@@ -88,12 +88,12 @@ public class RestauranteController {
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String numeroTelefone,
             @RequestParam(required = false) BigDecimal taxaEntrega,
-            @RequestParam(required = false) String nomeRestaurante,
+            @RequestParam(required = false) String nome,
             @RequestParam(required = false) LocalTime horarioAbertura,
             @RequestParam(required = false) LocalTime horarioFechamento,
             @RequestParam(required = false) CategoriaRestaurante categoriaRestaurante
     ) {
-        List<RestauranteResponse> restaurantes = restauranteService.buscarPorFiltro(email, numeroTelefone, taxaEntrega, nomeRestaurante, horarioAbertura, horarioFechamento, categoriaRestaurante);
+        List<RestauranteResponse> restaurantes = restauranteService.buscarPorFiltro(email, numeroTelefone, taxaEntrega, nome, horarioAbertura, horarioFechamento, categoriaRestaurante);
         return ResponseEntity.ok(restaurantes);
     }
 }

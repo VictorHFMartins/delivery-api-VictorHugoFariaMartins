@@ -43,7 +43,7 @@ public class Telefone {
     @Column(name = "ddd", nullable = false, length = 3)
     private String ddd;
 
-    @Column(name = "numero", nullable = false, length = 15)
+    @Column(name = "numero", nullable = false, length = 11)
     private String numero;
 
     @Column(name = "ativo", nullable = false)

@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.deliverytech.delivery.api.dto.CepRequest;
 import com.deliverytech.delivery.api.dto.EnderecoRequest;
 import com.deliverytech.delivery.api.dto.EnderecoResponse;
-import com.deliverytech.delivery.api.dto.EnderecoUpdateRequest;
 import com.deliverytech.delivery.api.exceptions.BusinessException;
 import com.deliverytech.delivery.domain.enums.TipoLogradouro;
 import com.deliverytech.delivery.domain.model.Cep;
@@ -86,7 +85,7 @@ public class EnderecoServiceImp implements EnderecoService {
     }
 
     @Override
-    public EnderecoResponse atualizar(Long usuarioId, Long enderecoId, EnderecoUpdateRequest dto) {
+    public EnderecoResponse atualizar(Long usuarioId, Long enderecoId, EnderecoRequest dto) {
         Usuario usuario = usuarioValidator.validarUsuario(usuarioId);
 
         Endereco endereco = enderecoRepository.findById(Objects.requireNonNull(enderecoId))

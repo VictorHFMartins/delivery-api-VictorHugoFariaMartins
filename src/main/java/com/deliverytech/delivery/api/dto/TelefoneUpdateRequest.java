@@ -10,6 +10,9 @@ public record TelefoneUpdateRequest(
         String ddd,
  
         @NotBlank(message = "O numero é obrigatorio")
-        @Pattern(regexp = "\\d{8,9}", message = "O número deve conter 8 ou 9 dígitos")
-        String numero) {
-}
+        @Pattern(regexp = "\\d{8,11}", message = "O número deve conter 8 ou 9 dígitos")
+        String numero,
+        
+        @NotBlank(message = "Tipo de telefone é obrigatório")
+        String tipoTelefone
+        ){}

@@ -30,7 +30,7 @@ public interface RestauranteService {
             String email,
             String numeroTelefone,
             BigDecimal taxaEntrega,
-            String nomeRestaurante,
+            String nome,
             LocalTime horarioAbertura,
             LocalTime horarioFechamento,
             CategoriaRestaurante categoriaRestaurante);

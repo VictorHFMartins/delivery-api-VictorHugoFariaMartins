@@ -18,7 +18,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.deliverytech.delivery.api.dto.EnderecoRequest;
 import com.deliverytech.delivery.api.dto.EnderecoResponse;
-import com.deliverytech.delivery.api.dto.EnderecoUpdateRequest;
 import com.deliverytech.delivery.domain.enums.TipoLogradouro;
 import com.deliverytech.delivery.domain.services.EnderecoService;
 
@@ -49,9 +48,9 @@ public class EnderecoController {
     public ResponseEntity<EnderecoResponse> atualizar(
             @PathVariable Long usuarioId,
             @PathVariable Long enderecoId,
-            @RequestBody @Valid EnderecoUpdateRequest enderecoUpdateDto) {
+            @RequestBody @Valid EnderecoRequest enderecoRequest) {
 
-        EnderecoResponse endereco = enderecoService.atualizar(usuarioId, enderecoId, enderecoUpdateDto);
+        EnderecoResponse endereco = enderecoService.atualizar(usuarioId, enderecoId, enderecoRequest);
 
         return ResponseEntity.ok(endereco);
     }

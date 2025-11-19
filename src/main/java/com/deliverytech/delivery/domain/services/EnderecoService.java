@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.deliverytech.delivery.api.dto.EnderecoRequest;
 import com.deliverytech.delivery.api.dto.EnderecoResponse;
-import com.deliverytech.delivery.api.dto.EnderecoUpdateRequest;
 import com.deliverytech.delivery.domain.enums.TipoLogradouro;
 import com.deliverytech.delivery.domain.model.Endereco;
 
@@ -14,7 +13,7 @@ public interface EnderecoService {
 
     EnderecoResponse criar(Long usuarioId, EnderecoRequest enderecoDto);
 
-    EnderecoResponse atualizar(Long usuarioId, Long enderecoId, EnderecoUpdateRequest enderecoUpdateDto);
+    EnderecoResponse atualizar(Long usuarioId, Long enderecoId, EnderecoRequest enderecoUpdateDto);
 
     EnderecoResponse buscarPorId(Long idEndereco);
 

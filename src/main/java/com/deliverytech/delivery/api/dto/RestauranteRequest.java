@@ -7,6 +7,7 @@ import java.util.List;
 import com.deliverytech.delivery.domain.enums.CategoriaRestaurante;
 import com.deliverytech.delivery.domain.enums.EstadoRestaurante;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,11 +20,13 @@ public record RestauranteRequest(
         @Email(message = "E-mail inválido")
         String email,
         
-        @NotNull(message = "O id do telefone é obrigatório")
-        List<Long> telefoneIds,
+        @Valid
+        @NotNull(message = "Os telefones são obrigatórios")
+        List<TelefoneRequest> telefones,
         
-        @NotNull(message = "Endereço é obrigatório")
-        Long enderecoId,
+        @Valid
+        @NotNull(message = "O endereço é obrigatório")
+        EnderecoRequest endereco,
         
         @NotBlank(message = "CNPJ é obrigatório")
         String cnpj,
