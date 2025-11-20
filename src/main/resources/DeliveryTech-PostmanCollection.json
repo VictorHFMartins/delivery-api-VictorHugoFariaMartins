@@ -1,10 +1,16 @@
 {
   "info": {
-    "name": "Delivery Tech API",
-    "_postman_id": "delivery-tech-api-collection",
-    "description": "Coleção de endpoints para a API Delivery Tech (Spring Boot + Java 21).",
+    "name": "DeliveryTech API",
+    "_postman_id": "deliverytech-api-collection",
+    "description": "Coleção completa e atualizada dos endpoints da API DeliveryTech (Java + Spring Boot).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    }
+  ],
   "item": [
     {
       "name": "Clientes",
@@ -14,6 +20,13 @@
           "request": {
             "method": "GET",
             "url": "{{base_url}}/clientes"
+          }
+        },
+        {
+          "name": "Listar clientes ativos",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/clientes/ativos"
           }
         },
         {
@@ -35,7 +48,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nome\": \"Carlos Silva\",\n  \"email\": \"carlos@cliente.com\",\n  \"enderecoId\": 1\n}"
+              "raw": "{\n  \"nome\": \"João da Silva\",\n  \"email\": \"joao@email.com\",\n  \"telefones\": [\n    {\"ddd\": \"11\", \"numero\": \"998887776\", \"tipoTelefone\": \"CELULAR\"}\n  ],\n  \"endereco\": {\n    \"logradouro\": \"Rua das Flores\",\n    \"tipoLogradouro\": \"RUA\",\n    \"numero\": \"123\",\n    \"complemento\": \"Apto 1\",\n    \"bairro\": \"Centro\",\n    \"cepCodigo\": \"01001000\",\n    \"cidadeId\": 1,\n    \"longitude\": -46.6333,\n    \"latitude\": -23.5505\n  }\n}"
             },
             "url": "{{base_url}}/clientes"
           }
@@ -52,13 +65,13 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nome\": \"Carlos Silva Jr\",\n  \"email\": \"carlosjr@cliente.com\"\n}"
+              "raw": "{\n  \"nome\": \"João Silva Atualizado\",\n  \"email\": \"novoemail@teste.com\",\n  \"telefones\": [\n    {\"ddd\": \"11\", \"numero\": \"998887776\", \"tipoTelefone\": \"WHATSAPP\"}\n  ],\n  \"endereco\": {\n    \"logradouro\": \"Avenida Central\",\n    \"tipoLogradouro\": \"AVENIDA\",\n    \"numero\": \"500\",\n    \"complemento\": \"Bloco B\",\n    \"bairro\": \"Jardins\",\n    \"cepCodigo\": \"01002000\",\n    \"cidadeId\": 1,\n    \"longitude\": -46.6300,\n    \"latitude\": -23.5580\n  }\n}"
             },
             "url": "{{base_url}}/clientes/1"
           }
         },
         {
-          "name": "Inativar cliente",
+          "name": "Ativar / Inativar cliente",
           "request": {
             "method": "PATCH",
             "url": "{{base_url}}/clientes/inativar/1"
@@ -70,6 +83,147 @@
             "method": "DELETE",
             "url": "{{base_url}}/clientes/1"
           }
+        },
+        {
+          "name": "Buscar clientes com filtros",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/clientes/buscar?nome=joao&email=&cep=&cidade=&estado=&telefone="
+          }
+        }
+      ]
+    },
+    {
+      "name": "Telefones",
+      "item": [
+        {
+          "name": "Listar todos",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/telefones"
+          }
+        },
+        {
+          "name": "Cadastrar telefone para usuário",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ddd\": \"11\",\n  \"numero\": \"998887776\",\n  \"tipoTelefone\": \"CELULAR\"\n}"
+            },
+            "url": "{{base_url}}/telefones/1"
+          }
+        },
+        {
+          "name": "Atualizar telefone",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ddd\": \"11\",\n  \"numero\": \"777788889\",\n  \"tipoTelefone\": \"WHATSAPP\"\n}"
+            },
+            "url": "{{base_url}}/telefones/usuario/1/telefone/1"
+          }
+        },
+        {
+          "name": "Excluir telefone",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/telefones/usuario/1/telefone/1"
+          }
+        },
+        {
+          "name": "Buscar telefones por filtro",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/telefones/buscar?ddd=11&numero=&usuarioId=&tipoUsuario=&tipoTelefone="
+          }
+        }
+      ]
+    },
+    {
+      "name": "Endereços",
+      "item": [
+        {
+          "name": "Listar endereços",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/enderecos"
+          }
+        },
+        {
+          "name": "Cadastrar endereço para usuário",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"logradouro\": \"Rua Teste\",\n  \"tipoLogradouro\": \"RUA\",\n  \"numero\": \"45\",\n  \"complemento\": \"Casa\",\n  \"bairro\": \"Centro\",\n  \"cepCodigo\": \"01003000\",\n  \"cidadeId\": 1,\n  \"longitude\": -46.6200,\n  \"latitude\": -23.5500\n}"
+            },
+            "url": "{{base_url}}/enderecos/1"
+          }
+        },
+        {
+          "name": "Atualizar endereço",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"logradouro\": \"Rua Nova\",\n  \"tipoLogradouro\": \"AVENIDA\",\n  \"numero\": \"90\",\n  \"complemento\": \"Ap 32\",\n  \"bairro\": \"Bela Vista\",\n  \"cepCodigo\": \"01004000\",\n  \"cidadeId\": 1,\n  \"longitude\": -46.6100,\n  \"latitude\": -23.5490\n}"
+            },
+            "url": "{{base_url}}/enderecos/usuario/1/endereco/1"
+          }
+        },
+        {
+          "name": "Excluir endereço",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/enderecos/1"
+          }
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/enderecos/1"
+          }
+        },
+        {
+          "name": "Buscar por número e logradouro",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/enderecos/logradouro?nome=Rua&num=123"
+          }
+        },
+        {
+          "name": "Buscar por filtros",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/enderecos/buscar?bairro=&cepCodigo=&logradouro=&tipoLogradouro="
+          }
         }
       ]
     },
@@ -77,24 +231,79 @@
       "name": "Restaurantes",
       "item": [
         {
-          "name": "Listar todos os restaurantes",
+          "name": "Listar restaurantes",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/restaurantes"
           }
         },
         {
-          "name": "Buscar restaurante por ID",
+          "name": "Buscar por ID",
           "request": {
             "method": "GET",
-            "url": "{{base_url}}/restaurantes/4"
+            "url": "{{base_url}}/restaurantes/1"
           }
         },
         {
-          "name": "Buscar restaurante por CNPJ",
+          "name": "Buscar por CNPJ",
           "request": {
             "method": "GET",
-            "url": "{{base_url}}/restaurantes/cnpj/12.345.678-0001-99"
+            "url": "{{base_url}}/restaurantes/cnpj?cnpj=12.345.678/0001-99"
+          }
+        },
+        {
+          "name": "Cadastrar restaurante",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Restaurante Teste\",\n  \"email\": \"contato@restaurante.com\",\n  \"telefones\": [\n    {\"ddd\": \"11\", \"numero\": \"999888777\", \"tipoTelefone\": \"FIXO\"}\n  ],\n  \"endereco\": {\n    \"logradouro\": \"Av Paulista\",\n    \"tipoLogradouro\": \"AVENIDA\",\n    \"numero\": \"1000\",\n    \"complemento\": \"Sala 10\",\n    \"bairro\": \"Bela Vista\",\n    \"cepCodigo\": \"01311000\",\n    \"cidadeId\": 1,\n    \"longitude\": -46.6512,\n    \"latitude\": -23.5640\n  },\n  \"cnpj\": \"12.345.678/0001-00\",\n  \"classe\": \"BRASILEIRO\",\n  \"estado\": \"ABERTO\",\n  \"horarioAbertura\": \"08:00:00\",\n  \"horarioFechamento\": \"22:00:00\",\n  \"taxaEntrega\": 8.50\n}"
+            },
+            "url": "{{base_url}}/restaurantes"
+          }
+        },
+        {
+          "name": "Atualizar restaurante",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Restaurante Atualizado\",\n  \"email\": \"novoemail@rest.com\",\n  \"telefones\": [\n    {\"ddd\": \"11\", \"numero\": \"900000000\", \"tipoTelefone\": \"WHATSAPP\"}\n  ],\n  \"endereco\": {\n    \"logradouro\": \"Rua Nova\",\n    \"tipoLogradouro\": \"RUA\",\n    \"numero\": \"200\",\n    \"complemento\": \"Loja 2\",\n    \"bairro\": \"Centro\",\n    \"cepCodigo\": \"01302000\",\n    \"cidadeId\": 1,\n    \"longitude\": -46.6400,\n    \"latitude\": -23.5500\n  },\n  \"cnpj\": \"12.345.678/0001-00\",\n  \"classe\": \"ITALIANO\",\n  \"estado\": \"FECHADO\",\n  \"horarioAbertura\": \"10:00:00\",\n  \"horarioFechamento\": \"23:00:00\",\n  \"taxaEntrega\": 10.00\n}"
+            },
+            "url": "{{base_url}}/restaurantes/1"
+          }
+        },
+        {
+          "name": "Ativar / Inativar restaurante",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/restaurantes/inativar/1"
+          }
+        },
+        {
+          "name": "Excluir restaurante",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/restaurantes/1"
+          }
+        },
+        {
+          "name": "Buscar restaurantes com filtro",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/restaurantes/buscar?email=&numeroTelefone=&taxaEntrega=&nome=&horarioAbertura=&horarioFechamento=&categoriaRestaurante="
           }
         }
       ]
@@ -110,14 +319,14 @@
           }
         },
         {
-          "name": "Buscar produto por ID",
+          "name": "Buscar por ID",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/produtos/1"
           }
         },
         {
-          "name": "Cadastrar novo produto",
+          "name": "Cadastrar produto",
           "request": {
             "method": "POST",
             "header": [
@@ -128,9 +337,9 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nome\": \"Pizza de Calabresa\",\n  \"descricao\": \"Massa fina e crocante\",\n  \"quantidade\": 10,\n  \"preco\": 42.50,\n  \"categoriaProduto\": \"COMIDAS\",\n  \"disponibilidade\": true\n}"
+              "raw": "{\n  \"nome\": \"Pizza Calabresa\",\n  \"quantidade\": 10,\n  \"preco\": 35.90,\n  \"descricao\": \"Pizza tradicional\",\n  \"categoriaProduto\": \"COMIDAS\"\n}"
             },
-            "url": "{{base_url}}/produtos/5"
+            "url": "{{base_url}}/produtos/1"
           }
         },
         {
@@ -145,16 +354,16 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nome\": \"Pizza Quatro Queijos\",\n  \"preco\": 48.00\n}"
+              "raw": "{\n  \"nome\": \"Pizza Quatro Queijos\",\n  \"quantidade\": 5,\n  \"preco\": 42.00,\n  \"descricao\": \"Quatro tipos de queijo\",\n  \"categoriaProduto\": \"COMIDAS\"\n}"
             },
             "url": "{{base_url}}/produtos/1"
           }
         },
         {
-          "name": "Alterar disponibilidade",
+          "name": "Ativar / Inativar produto",
           "request": {
             "method": "PATCH",
-            "url": "{{base_url}}/produtos/1/disponibilidade"
+            "url": "{{base_url}}/produtos/1"
           }
         },
         {
@@ -163,6 +372,20 @@
             "method": "DELETE",
             "url": "{{base_url}}/produtos/1"
           }
+        },
+        {
+          "name": "Buscar por filtros",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/produtos/buscar?nome=&id=&preco=&categoriaProduto="
+          }
+        },
+        {
+          "name": "Buscar por restaurante",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/produtos/restaurante?nome=&id="
+          }
         }
       ]
     },
@@ -170,21 +393,21 @@
       "name": "Pedidos",
       "item": [
         {
-          "name": "Listar todos os pedidos",
+          "name": "Listar pedidos",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/pedidos"
           }
         },
         {
-          "name": "Buscar pedido por ID",
+          "name": "Buscar por ID",
           "request": {
             "method": "GET",
             "url": "{{base_url}}/pedidos/1"
           }
         },
         {
-          "name": "Cadastrar novo pedido",
+          "name": "Cadastrar pedido",
           "request": {
             "method": "POST",
             "header": [
@@ -195,7 +418,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"clienteId\": 1,\n  \"restauranteId\": 4,\n  \"itens\": [\n    {\"produtoId\": 1, \"quantidade\": 2},\n    {\"produtoId\": 3, \"quantidade\": 1}\n  ],\n  \"observacoes\": \"Sem cebola\"\n}"
+              "raw": "{\n  \"clienteId\": 1,\n  \"restauranteId\": 1,\n  \"itens\": [\n    {\"produtoId\": 1, \"quantidade\": 2},\n    {\"produtoId\": 2, \"quantidade\": 1}\n  ],\n  \"observacoes\": \"Sem cebola\"\n}"
             },
             "url": "{{base_url}}/pedidos"
           }
@@ -212,13 +435,13 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"clienteId\": 2,\n  \"restauranteId\": 5,\n  \"itens\": [\n    {\"produtoId\": 4, \"quantidade\": 1}\n  ],\n  \"observacoes\": \"Trocar bebida por suco\"\n}"
+              "raw": "{\n \"clienteId\": 1,\n \"restauranteId\": 1,\n \"itens\": [\n    {\"produtoId\": 1, \"quantidade\": 1}\n ],\n \"observacoes\": \"Trocar bebida por suco\"\n}"
             },
             "url": "{{base_url}}/pedidos/1"
           }
         },
         {
-          "name": "Atualizar status",
+          "name": "Atualizar status pedido",
           "request": {
             "method": "PATCH",
             "url": "{{base_url}}/pedidos/1?statusPedido=CONFIRMADO"
@@ -228,7 +451,7 @@
           "name": "Cancelar pedido",
           "request": {
             "method": "PATCH",
-            "url": "{{base_url}}/pedidos/cancelar?idPedido=1"
+            "url": "{{base_url}}/pedidos/cancelar/1"
           }
         },
         {
@@ -237,14 +460,256 @@
             "method": "DELETE",
             "url": "{{base_url}}/pedidos/1"
           }
+        },
+        {
+          "name": "Buscar pedidos por cliente",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/pedidos/cliente/1"
+          }
+        },
+        {
+          "name": "Buscar pedidos por restaurante",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/pedidos/restaurante/1"
+          }
         }
       ]
-    }
-  ],
-  "variable": [
+    },
     {
-      "key": "base_url",
-      "value": "http://localhost:8080"
+      "name": "Cidades",
+      "item": [
+        {
+          "name": "Listar cidades",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/cidades"
+          }
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/cidades/1"
+          }
+        },
+        {
+          "name": "Cadastrar cidade",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"São Paulo\",\n  \"estadoId\": 1\n}"
+            },
+            "url": "{{base_url}}/cidades"
+          }
+        },
+        {
+          "name": "Atualizar cidade",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"São Paulo Updated\",\n  \"estadoId\": 1\n}"
+            },
+            "url": "{{base_url}}/cidades/1"
+          }
+        },
+        {
+          "name": "Excluir cidade",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/cidades/1"
+          }
+        },
+        {
+          "name": "Buscar por nome",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/cidades/nome?nome=paulo"
+          }
+        },
+        {
+          "name": "Buscar cidades por UF",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/cidades/estado?uf=SP"
+          }
+        }
+      ]
+    },
+    {
+      "name": "CEPs",
+      "item": [
+        {
+          "name": "Listar CEPs",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/ceps"
+          }
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/ceps/1"
+          }
+        },
+        {
+          "name": "Cadastrar CEP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"01001000\",\n  \"cidadeId\": 1\n}"
+            },
+            "url": "{{base_url}}/ceps"
+          }
+        },
+        {
+          "name": "Atualizar CEP",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"01002000\",\n  \"cidadeId\": 1\n}"
+            },
+            "url": "{{base_url}}/ceps/1"
+          }
+        },
+        {
+          "name": "Excluir CEP",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/ceps/1"
+          }
+        },
+        {
+          "name": "Buscar por código",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/ceps/codigo?num=01001000"
+          }
+        },
+        {
+          "name": "Buscar CEPs por cidade",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/ceps/cidade?nome=paulo"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Estados",
+      "item": [
+        {
+          "name": "Listar Estados",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/estados"
+          }
+        },
+        {
+          "name": "Buscar Estado por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/estados/1"
+          }
+        },
+        {
+          "name": "Cadastrar Estado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"São Paulo\",\n  \"uf\": \"SP\"\n}"
+            },
+            "url": "{{base_url}}/estados"
+          }
+        },
+        {
+          "name": "Atualizar Estado",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"São Paulo Updated\",\n  \"uf\": \"SP\"\n}"
+            },
+            "url": "{{base_url}}/estados/1"
+          }
+        },
+        {
+          "name": "Excluir Estado",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/estados/1"
+          }
+        },
+        {
+          "name": "Buscar Estado por UF",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/estados/estado?uf=SP"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Status",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/health"
+          }
+        },
+        {
+          "name": "Info",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/health/info"
+          }
+        }
+      ]
     }
   ]
 }

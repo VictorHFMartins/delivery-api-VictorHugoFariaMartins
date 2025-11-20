@@ -34,12 +34,10 @@ public class TelefoneValidator {
     public String formatarNumeroTelefone(String numero) {
         numero = numero.replaceAll("\\D", "");
 
-        if (numero.length() == 9) {
-            return numero.substring(0, 5) + "-" + numero.substring(5);
-        } else if (numero.length() == 8) {
-            return numero.substring(0, 4) + "-" + numero.substring(4);
-        } else {
-            return numero; 
-        }
+        return switch (numero.length()) {
+            case 9 -> numero.substring(0, 5) + "-" + numero.substring(5);
+            case 8 -> numero.substring(0, 4) + "-" + numero.substring(4);
+            default -> numero;
+        };
     }
 }
