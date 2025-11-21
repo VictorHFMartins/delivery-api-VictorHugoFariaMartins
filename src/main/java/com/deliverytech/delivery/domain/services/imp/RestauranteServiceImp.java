@@ -46,7 +46,7 @@ public class RestauranteServiceImp implements RestauranteService {
 
         Restaurante restaurante = new Restaurante();
         restaurante.setNome(dto.nome());
-        restaurante.setCnpj(dto.cnpj());
+        setCnpj(restaurante, dto.cnpj());
         restaurante.setEmail(dto.email());
         restaurante.setEndereco(endereco);
         restaurante.setCategoria(dto.classe());
@@ -116,10 +116,6 @@ public class RestauranteServiceImp implements RestauranteService {
         restauranteExistente.setNome(dto.nome());
         restauranteExistente.setEmail(dto.email());
 
-        if (dto.telefones().isEmpty()) {
-            throw new BusinessException("Deve existir ao menos um telefone");
-        }
-
         restauranteExistente.getTelefones().clear();
 
         List<Telefone> novosTelefones = dto.telefones().stream()
@@ -144,7 +140,7 @@ public class RestauranteServiceImp implements RestauranteService {
         var novoEndereco = enderecoValidator.criarEndereco(dto.endereco(), cep);
 
         restauranteExistente.setEndereco(novoEndereco);
-        restauranteExistente.setCnpj(dto.cnpj());
+        setCnpj(restauranteExistente, dto.cnpj());
         restauranteExistente.setCategoria(dto.classe());
         restauranteExistente.setEstado(dto.estado());
         restauranteExistente.setHorarioAbertura(dto.horarioAbertura());
@@ -179,7 +175,9 @@ public class RestauranteServiceImp implements RestauranteService {
     @Override
     @Transactional(readOnly = true)
     public RestauranteResponse buscarPorCnpj(String cnpj) {
-        Restaurante restaurante = restauranteRepository.findByCnpjIgnoreCase(cnpj)
+        String cnpjLimpo = cnpj.replaceAll("[^0-9]", "");
+
+        Restaurante restaurante = restauranteRepository.findByCnpj(cnpjLimpo)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurante não encontrado para o cnpj: " + cnpj));
         return RestauranteResponse.of(restaurante);
     }
@@ -276,4 +274,10 @@ public class RestauranteServiceImp implements RestauranteService {
                 .toList();
     }
 
+    public void setCnpj(Restaurante restaurante, String cnpj) {
+        if (cnpj != null) {
+            cnpj = cnpj.replaceAll("[^0-9]", "");
+            restaurante.setCnpj(cnpj);
+        }
+    }
 }

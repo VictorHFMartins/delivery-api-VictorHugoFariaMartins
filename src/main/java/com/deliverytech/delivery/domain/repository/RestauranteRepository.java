@@ -19,7 +19,7 @@ public interface RestauranteRepository extends JpaRepository<Restaurante, Long> 
     Optional<Restaurante> findByNomeContainingIgnoreCase(String nome);
 
     // Busca por cnpj
-    Optional<Restaurante> findByCnpjIgnoreCase(String cnpj);
+    Optional<Restaurante> findByCnpj(String cnpj);
 
     // Buscar restaurantes ativos
     List<Restaurante> findByStatusTrue();

@@ -16,7 +16,6 @@ import com.deliverytech.delivery.domain.enums.CategoriaProduto;
 import com.deliverytech.delivery.domain.model.Produto;
 import com.deliverytech.delivery.domain.model.Restaurante;
 import com.deliverytech.delivery.domain.repository.ProdutoRepository;
-import com.deliverytech.delivery.domain.repository.RestauranteRepository;
 import com.deliverytech.delivery.domain.services.ProdutoService;
 import com.deliverytech.delivery.domain.validator.UsuarioValidator;
 
@@ -29,92 +28,95 @@ import lombok.AllArgsConstructor;
 public class ProdutoServiceImp implements ProdutoService {
 
     private final ProdutoRepository produtoRepository;
-    private final RestauranteRepository restauranteRepository;
-
     private final UsuarioValidator usuarioValidator;
-
     private final ModelMapper modelMapper;
 
-    @Override
-    public Produto buscarOuCriar(ProdutoRequest dto) {
+    private Produto buscarOuCriar(Long restauranteId, ProdutoRequest dto) {
+
         String nome = dto.nome().trim();
 
-        Optional<Produto> existente = produtoRepository.findByNome(nome);
+        Optional<Produto> existenteOpt
+                = produtoRepository.findByNomeAndRestauranteId(nome, restauranteId);
 
-        if (existente.isPresent()) {
-            return existente.get();
+        if (existenteOpt.isPresent()) {
+            Produto existente = existenteOpt.get();
+            existente.setDisponibilidade(existente.getQuantidade() > 0);
+            return existente;
         }
 
-        Produto produto = modelMapper.map(dto, Produto.class);
-        if (produto == null) {
+        Produto novo = modelMapper.map(dto, Produto.class);
+
+        if (novo == null) {
             throw new BusinessException("Erro ao mapear produto a partir do DTO");
         }
 
-        if (produto.getQuantidade() > 0) {
-            produto.setDisponibilidade(true);
-        } else {
-            produto.setDisponibilidade(false);
-        }
+        novo.setDisponibilidade(dto.quantidade() > 0);
 
-        return produtoRepository.save(produto);
-
+        return novo;
     }
 
     @Override
     public ProdutoResponse criar(Long restauranteId, ProdutoRequest dto) {
 
-        Restaurante restaurante = (Restaurante) usuarioValidator.validarUsuario(restauranteId);
+        Restaurante restaurante = usuarioValidator.validarRestaurante(restauranteId);
 
-        Produto produto = buscarOuCriar(dto);
+        Produto produto = buscarOuCriar(restauranteId, dto);
 
         produto.setRestaurante(restaurante);
-        produtoRepository.save(produto);
-
         restaurante.getProdutos().add(produto);
-        restauranteRepository.save(restaurante);
 
-        return ProdutoResponse.of(produto);
+        Produto salvo = produtoRepository.save(produto);
 
+        return ProdutoResponse.of(salvo);
     }
 
     @Override
     public ProdutoResponse atualizar(Long produtoId, ProdutoRequest dto) {
 
         Produto produto = produtoRepository.findById(Objects.requireNonNull(produtoId))
-                .orElseThrow(() -> new EntityNotFoundException("produto não encontrado para o id: " + produtoId));
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Produto não encontrado para o id: " + produtoId));
+
+        if (!produto.getRestaurante().getId().equals(dto.restauranteId())) {
+            throw new BusinessException("Produto não pertence ao restaurante informado.");
+        }
 
         produto.setNome(dto.nome());
-        produto.setQuantidade(dto.quantidade());
-        produto.setPreco(dto.preco());
         produto.setDescricao(dto.descricao());
         produto.setCategoriaProduto(dto.categoriaProduto());
+        produto.setPreco(dto.preco());
+        produto.setQuantidade(dto.quantidade());
 
-        produtoRepository.save(Objects.requireNonNull(produto));
+        produto.setDisponibilidade(dto.quantidade() > 0);
 
-        return modelMapper.map(produto, ProdutoResponse.class);
+        produtoRepository.save(produto);
 
+        return ProdutoResponse.of(produto);
     }
 
     @Override
     public ProdutoResponse ativarInativar(Long produtoId) {
+
         Produto produto = produtoRepository.findById(Objects.requireNonNull(produtoId))
-                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado para o id: " + produtoId));
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Produto não encontrado para o id: " + produtoId));
 
         produto.setDisponibilidade(!produto.isDisponibilidade());
         produtoRepository.save(produto);
+
         return ProdutoResponse.of(produto);
     }
 
     @Override
     public void deletar(Long produtoId) {
-        produtoRepository.deleteById(Objects.requireNonNull(produtoId, "Produto não encontrado para o id: " + produtoId));
+        produtoRepository.deleteById(
+                Objects.requireNonNull(produtoId, "Produto não encontrado para o id: " + produtoId));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ProdutoResponse> buscarTodos() {
-        List<Produto> produtos = produtoRepository.findAll();
-        return produtos.stream()
+        return produtoRepository.findAll().stream()
                 .map(ProdutoResponse::of)
                 .toList();
     }
@@ -122,8 +124,11 @@ public class ProdutoServiceImp implements ProdutoService {
     @Override
     @Transactional(readOnly = true)
     public ProdutoResponse buscarPorId(Long produtoId) {
+
         Produto produto = produtoRepository.findById(Objects.requireNonNull(produtoId))
-                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado para o id: " + produtoId));
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Produto não encontrado para o id: " + produtoId));
+
         return ProdutoResponse.of(produto);
     }
 
@@ -133,32 +138,32 @@ public class ProdutoServiceImp implements ProdutoService {
             String nome,
             Long quantidade,
             BigDecimal preco,
-            CategoriaProduto categoriaProduto) {
+            CategoriaProduto categoria) {
 
         List<Produto> produtos = produtoRepository.findAll();
 
         if (nome != null && !nome.isBlank()) {
             produtos = produtos.stream()
-                    .filter(p -> p.getNome()
-                    .toLowerCase().contains(nome.toLowerCase()))
+                    .filter(p -> p.getNome().toLowerCase()
+                    .contains(nome.toLowerCase()))
                     .toList();
         }
+
         if (quantidade != null) {
             produtos = produtos.stream()
-                    .filter(p -> p.getQuantidade()
-                    .equals(quantidade))
+                    .filter(p -> Objects.equals(p.getQuantidade(), quantidade))
                     .toList();
         }
+
         if (preco != null) {
             produtos = produtos.stream()
-                    .filter(p -> p.getPreco()
-                    .equals(preco))
+                    .filter(p -> p.getPreco().compareTo(preco) == 0)
                     .toList();
         }
-        if (categoriaProduto != null) {
+
+        if (categoria != null) {
             produtos = produtos.stream()
-                    .filter(p -> p.getCategoriaProduto()
-                    .equals(categoriaProduto))
+                    .filter(p -> p.getCategoriaProduto().equals(categoria))
                     .toList();
         }
 
@@ -169,32 +174,9 @@ public class ProdutoServiceImp implements ProdutoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProdutoResponse> buscarProdutosPorRestaurante(
-            String restauranteNome,
-            Long restauranteId) {
+    public List<ProdutoResponse> buscarProdutosPorRestaurante(Long restauranteId) {
 
-        List<Produto> produtos = produtoRepository.findAll();
-
-        if (restauranteNome != null && !restauranteNome.isBlank()) {
-            produtos = produtos.stream()
-                    .filter(p -> p.getRestaurante().getNome()
-                    .toLowerCase().contains(restauranteNome.toLowerCase()))
-                    .toList();
-            return produtos.stream()
-                    .map(ProdutoResponse::of)
-                    .toList();
-        }
-
-        if (restauranteId != null) {
-            produtos = produtos.stream()
-                    .filter(p -> p.getRestaurante().getId()
-                    .equals(restauranteId))
-                    .toList();
-
-            return produtos.stream()
-                    .map(ProdutoResponse::of)
-                    .toList();
-        }
+        List<Produto> produtos = produtoRepository.findByRestauranteId(restauranteId);
 
         return produtos.stream()
                 .map(ProdutoResponse::of)

@@ -5,13 +5,14 @@ import java.util.List;
 
 import com.deliverytech.delivery.api.dto.PedidoRequest;
 import com.deliverytech.delivery.api.dto.PedidoResponse;
+import com.deliverytech.delivery.api.dto.PedidoUpdateRequest;
 import com.deliverytech.delivery.domain.enums.StatusPedido;
 
 public interface PedidoService {
 
     PedidoResponse criar(PedidoRequest dto);
 
-    PedidoResponse atualizar(Long pedidoId, PedidoRequest dto);
+    PedidoResponse atualizar(Long pedidoId, PedidoUpdateRequest dto);
 
     PedidoResponse cancelar(Long pedidoId);
 

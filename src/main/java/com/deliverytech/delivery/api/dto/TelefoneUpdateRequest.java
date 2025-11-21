@@ -1,18 +1,26 @@
 package com.deliverytech.delivery.api.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import com.deliverytech.delivery.domain.enums.TipoTelefone;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
+@Schema(description = "Dados para atualizar um telefone existente")
 public record TelefoneUpdateRequest(
+
+        @Schema(description = "DDD do telefone", example = "11")
         @NotBlank(message = "O DDD é obrigatório")
-        @Size(min = 2, max = 2, message = "O DDD deve ter exatamente 2 dígitos")
+        @Pattern(regexp = "\\d{2}", message = "O DDD deve ter 2 dígitos numéricos")
         String ddd,
- 
-        @NotBlank(message = "O numero é obrigatorio")
-        @Pattern(regexp = "\\d{8,11}", message = "O número deve conter 8 ou 9 dígitos")
+
+        @Schema(description = "Número do telefone", example = "987654321")
+        @NotBlank(message = "O número é obrigatório")
+        @Pattern(regexp = "\\d{8,11}", message = "O número deve ter entre 8 e 11 dígitos")
         String numero,
-        
-        @NotBlank(message = "Tipo de telefone é obrigatório")
-        String tipoTelefone
-        ){}
+
+        @Schema(description = "Tipo de telefone", example = "WHATSAPP")
+        @NotNull(message = "O tipo do telefone é obrigatório")
+        TipoTelefone tipoTelefone
+) {}
