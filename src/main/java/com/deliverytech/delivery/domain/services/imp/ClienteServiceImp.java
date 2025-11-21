@@ -67,7 +67,7 @@ public class ClienteServiceImp implements ClienteService {
 
     @Override
     public ClienteResponse atualizar(Long id, ClienteRequest dto) {
-        Cliente clienteExistente = (Cliente) usuarioValidator.validarUsuario(id);
+        Cliente clienteExistente = usuarioValidator.validarCliente(id);
 
         if (dto.nome() == null || dto.nome().isBlank()) {
             throw new BusinessException("O nome não pode ser vazio");
@@ -119,7 +119,7 @@ public class ClienteServiceImp implements ClienteService {
 
     @Override
     public ClienteResponse ativarDesativar(Long clienteId) {
-        Cliente cliente = (Cliente) usuarioValidator.validarUsuario(clienteId);
+        Cliente cliente = usuarioValidator.validarCliente(clienteId);
         cliente.setStatus(!cliente.isStatus());
 
         return ClienteResponse.of(cliente);

@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import com.deliverytech.delivery.api.exceptions.EntityNotFoundException;
+import com.deliverytech.delivery.domain.enums.TipoUsuario;
 import com.deliverytech.delivery.domain.model.Cliente;
 import com.deliverytech.delivery.domain.model.Restaurante;
 import com.deliverytech.delivery.domain.model.Usuario;
@@ -35,4 +36,37 @@ public class UsuarioValidator {
 
         throw new EntityNotFoundException("Usuario não encontrado com id: " + usuarioId);
     }
+
+    public Cliente validarCliente(Long id) {
+
+        Usuario usuario = validarUsuario(id);
+
+        if (usuario.getTipoUsuario() != TipoUsuario.CLIENTE) {
+            throw new EntityNotFoundException(
+                    "O id " + id + " não pertence a um Cliente."
+            );
+        }
+
+        return clienteRepository.findById(Objects.requireNonNull(id))
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Cliente não encontrado para o id: " + id
+        ));
+    }
+
+    public Restaurante validarRestaurante(Long id) {
+
+        Usuario usuario = validarUsuario(id);
+
+        if (usuario.getTipoUsuario() != TipoUsuario.RESTAURANTE) {
+            throw new EntityNotFoundException(
+                    "O id " + id + " não pertence a um Restaurante."
+            );
+        }
+
+        return restauranteRepository.findById(Objects.requireNonNull(id))
+                .orElseThrow(() -> new EntityNotFoundException(
+                "Restaurante não encontrado para o id: " + id
+        ));
+    }
+
 }

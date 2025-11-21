@@ -43,7 +43,7 @@ public interface RestauranteRepository extends JpaRepository<Restaurante, Long> 
     List<Restaurante> findByTelefonesNumeroContaining(String numero);
 
     // Top 5 restaurantes por nome (ordem alfabética)
-    List<Restaurante> findTop5ByOrderByNomeAsc();
+    List<Restaurante> findTop5ByOrderByNotaAvaliacaoDescNomeAsc();
 
     boolean existsByEmail(String email);
 

@@ -3,13 +3,12 @@ package com.deliverytech.delivery.api.dto;
 import java.util.List;
 
 import com.deliverytech.delivery.domain.model.Cliente;
-import com.deliverytech.delivery.domain.model.Telefone;
 
 public record ClienteResponse(
         Long id,
         String nome,
         String email,
-        boolean status,
+        String status,
         List<String> telefones,
         EnderecoResponse endereco) {
 
@@ -17,14 +16,14 @@ public record ClienteResponse(
 
         List<String> telefones = c.getTelefones().stream()
                 .filter(t -> t.getUsuario() != null && t.getUsuario().getId().equals(c.getId()))
-                .map(Telefone::getNumero)
+                .map(t -> "(" + t.getDdd() + ") " + t.getNumero())
                 .toList();
 
         return new ClienteResponse(
                 c.getId(),
                 c.getNome(),
                 c.getEmail(),
-                c.isStatus(),
+                c.isStatus() ? "Ativo" : "Inativo",
                 telefones,
                 c.getEndereco() != null ? EnderecoResponse.of(c.getEndereco()) : null
         );

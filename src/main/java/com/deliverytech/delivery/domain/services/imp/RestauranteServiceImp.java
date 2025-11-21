@@ -75,7 +75,8 @@ public class RestauranteServiceImp implements RestauranteService {
 
     @Override
     public RestauranteResponse alterar(Long id, RestauranteRequest dto) {
-        Restaurante restauranteExistente = (Restaurante) usuarioValidator.validarUsuario(id);
+
+        Restaurante restauranteExistente = usuarioValidator.validarRestaurante(id);
 
         if (dto.email() == null || dto.email().isEmpty()) {
             throw new BusinessException("E-mail não pode ser vazio");
@@ -157,7 +158,7 @@ public class RestauranteServiceImp implements RestauranteService {
 
     @Override
     public RestauranteResponse ativarInativar(Long restauranteId) {
-        Restaurante restaurante = (Restaurante) usuarioValidator.validarUsuario(restauranteId);
+        Restaurante restaurante = usuarioValidator.validarRestaurante(restauranteId);
         restaurante.setStatus(!restaurante.isStatus());
 
         return RestauranteResponse.of(restaurante);
@@ -195,7 +196,9 @@ public class RestauranteServiceImp implements RestauranteService {
     @Override
     @Transactional(readOnly = true)
     public List<RestauranteResponse> listarPorRankingTop5() {
-        List<Restaurante> restaurantes = restauranteRepository.findTop5ByOrderByNomeAsc();
+        List<Restaurante> restaurantes
+                = restauranteRepository.findTop5ByOrderByNotaAvaliacaoDescNomeAsc();
+
         return restaurantes.stream()
                 .map(RestauranteResponse::of)
                 .toList();

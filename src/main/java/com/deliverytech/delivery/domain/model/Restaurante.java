@@ -70,19 +70,30 @@ public class Restaurante extends Usuario {
     @JsonIgnore
     private List<Pedido> pedidos;
 
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    List<Avaliacao> avaliacoes;
+
+    @Column(name = "nota_avaliacao", nullable = true)
+    Double notaAvaliacao;
+
     @PrePersist
     public void definirEstado() {
         if (this.estado == null) {
-            if (LocalTime.now().isAfter(horarioAbertura)) {
-                this.estado = EstadoRestaurante.ABERTO;
-            }
+            if (LocalTime.now().isAfter(horarioAbertura)
+                    && LocalTime.now().isBefore(horarioFechamento)) {
 
-            if (LocalTime.now().isBefore(horarioFechamento)) {
+                this.estado = EstadoRestaurante.ABERTO;
+
+            } else {
                 this.estado = EstadoRestaurante.FECHADO;
             }
         }
         if (tipoUsuario == null) {
             tipoUsuario = TipoUsuario.RESTAURANTE;
+        }
+        if (notaAvaliacao == null) {
+            notaAvaliacao = 0.0;
         }
     }
 

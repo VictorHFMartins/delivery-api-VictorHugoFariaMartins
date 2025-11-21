@@ -27,6 +27,10 @@ public class Cliente extends Usuario {
     @JsonIgnore
     private List<Pedido> pedidos;
 
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    List<Avaliacao> avaliacoes;
+
     @PrePersist
     public void definirTipo() {
         if (tipoUsuario == null) {
