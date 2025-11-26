@@ -19,4 +19,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     Optional<Produto> findByNomeAndRestauranteId(String nome, Long restauranteId);
 
+    List<Produto> findByDisponibilidadeTrue();
+
 }

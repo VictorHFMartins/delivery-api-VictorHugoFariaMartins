@@ -115,8 +115,9 @@ public class ProdutoServiceImp implements ProdutoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProdutoResponse> buscarTodos() {
-        return produtoRepository.findAll().stream()
+    public List<ProdutoResponse> buscarTodosDisponiveis() {
+        return produtoRepository.findByDisponibilidadeTrue()
+                .stream()
                 .map(ProdutoResponse::of)
                 .toList();
     }
@@ -151,13 +152,13 @@ public class ProdutoServiceImp implements ProdutoService {
 
         if (quantidade != null) {
             produtos = produtos.stream()
-                    .filter(p -> Objects.equals(p.getQuantidade(), quantidade))
+                    .filter(p -> p.getQuantidade().compareTo(quantidade) >= 0)
                     .toList();
         }
 
         if (preco != null) {
             produtos = produtos.stream()
-                    .filter(p -> p.getPreco().compareTo(preco) == 0)
+                    .filter(p -> p.getPreco().compareTo(preco) <= 0)
                     .toList();
         }
 

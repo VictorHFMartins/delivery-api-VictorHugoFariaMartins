@@ -1,8 +1,11 @@
 package com.deliverytech.delivery.api.controller;
 
+import java.math.BigDecimal;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,6 +32,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -38,6 +42,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/pedidos")
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
+@SecurityRequirement(name = "bearer-key")
 public class PedidoController {
 
     private final PedidoService pedidoService;
@@ -47,10 +52,10 @@ public class PedidoController {
             description = "Cria um novo pedido associado a um cliente e restaurante."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Pedido criado com sucesso",
-                    content = @Content(schema = @Schema(implementation = PedidoResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Erro de validação"),
-            @ApiResponse(responseCode = "404", description = "Cliente ou restaurante não encontrado")
+        @ApiResponse(responseCode = "201", description = "Pedido criado com sucesso",
+                content = @Content(schema = @Schema(implementation = PedidoResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Erro de validação"),
+        @ApiResponse(responseCode = "404", description = "Cliente ou restaurante não encontrado")
     })
     @PostMapping
     public ResponseEntity<PedidoResponse> cadastrar(
@@ -76,14 +81,13 @@ public class PedidoController {
             description = "Atualiza todos os dados do pedido, incluindo itens e observações."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Pedido atualizado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+        @ApiResponse(responseCode = "200", description = "Pedido atualizado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
     })
     @PutMapping("/{pedidoId}")
     public ResponseEntity<PedidoResponse> atualizar(
             @Parameter(description = "ID do pedido", example = "10")
             @PathVariable Long pedidoId,
-
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Dados atualizados do pedido",
                     required = true,
@@ -100,14 +104,13 @@ public class PedidoController {
             description = "Atualiza apenas o status do pedido."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Status atualizado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+        @ApiResponse(responseCode = "200", description = "Status atualizado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
     })
     @PatchMapping("/{pedidoId}/toggle-status")
     public ResponseEntity<PedidoResponse> atualizarStatus(
             @Parameter(description = "ID do pedido", example = "7")
             @PathVariable Long pedidoId,
-
             @Parameter(description = "Novo status", example = "CONFIRMADO")
             @RequestParam StatusPedido statusPedido) {
 
@@ -120,8 +123,8 @@ public class PedidoController {
             description = "Altera o status do pedido para CANCELADO."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Pedido cancelado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+        @ApiResponse(responseCode = "200", description = "Pedido cancelado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
     })
     @PatchMapping("/cancelar/{pedidoId}")
     public ResponseEntity<PedidoResponse> cancelarPedido(
@@ -137,8 +140,8 @@ public class PedidoController {
             description = "Exclui um pedido definitivamente."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Pedido removido"),
-            @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+        @ApiResponse(responseCode = "204", description = "Pedido removido"),
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
     })
     @DeleteMapping("/{pedidoId}")
     public ResponseEntity<Void> deletar(
@@ -164,8 +167,8 @@ public class PedidoController {
             description = "Retorna um pedido específico."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Pedido encontrado"),
-            @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
+        @ApiResponse(responseCode = "200", description = "Pedido encontrado"),
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
     })
     @GetMapping("/{pedidoId}")
     public ResponseEntity<PedidoResponse> buscarPorId(
@@ -180,8 +183,8 @@ public class PedidoController {
             description = "Retorna todos os pedidos de um cliente específico."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+        @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @GetMapping("/cliente/{clienteId}")
     public ResponseEntity<List<PedidoResponse>> listarPorCliente(
@@ -192,12 +195,87 @@ public class PedidoController {
     }
 
     @Operation(
+            summary = "Listar 10 ultimos pedidos por data",
+            description = "Retorna uma lista com os 10 ultimos pedidos realizados."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),})
+    @GetMapping("/ultimos-10-pedidos")
+    public ResponseEntity<List<PedidoResponse>> BuscarDezUltimosPedidos() {
+        return ResponseEntity.ok(pedidoService.listarDezPrimeirosPorDataDePedido());
+    }
+
+    @Operation(
+            summary = "Listar pedidos entre períodos de datas",
+            description = "Retorna todos os pedidos realizados dentro de um período pré definido."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),})
+    @GetMapping("/periodo")
+    public ResponseEntity<List<PedidoResponse>> BuscarEntreDatas(
+            @Parameter(description = "Data de inicio da busca", example = "10-11-2025 00:00:00")
+            @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+            @RequestParam LocalDateTime inicio,
+            @Parameter(description = "Data de termino da busca", example = "11-11-2025 23:59:59")
+            @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+            @RequestParam LocalDateTime fim) {
+
+        return ResponseEntity.ok(pedidoService.listarPedidosEntreDatas(inicio, fim));
+    }
+
+    @Operation(
+            summary = "Listar pedidos entre períodos de datas e status",
+            description = "Retorna todos os pedidos de um status específico realizados dentro de um período pré definido."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),})
+    @GetMapping("/periodo/status")
+    public ResponseEntity<List<PedidoResponse>> ListarPorPeríodoEStatus(
+            @Parameter(description = "Data de inicio da busca", example = "10-11-2025 00:00:00")
+            @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+            @RequestParam LocalDateTime inicio,
+            @Parameter(description = "Data de termino da busca", example = "11-11-2025 23:59:59")
+            @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+            @RequestParam LocalDateTime fim,
+            @Parameter(description = "Status do pedido", example = "ENTREGUE")
+            @RequestParam StatusPedido status) {
+        return ResponseEntity.ok(pedidoService.ListarPorPeríodoEStatus(inicio, fim, status));
+    }
+
+    @Operation(
+            summary = "Listar pedidos acima de um valor pré definido",
+            description = "Retorna todos os pedidos com um valor acima de um valor pré definido."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),})
+    @GetMapping("/acima-de")
+    public ResponseEntity<List<PedidoResponse>> listarPedidosAcimaDe(
+            @Parameter(description = "Valor mínimo para filtro", example = "50.00")
+            @RequestParam BigDecimal valor) {
+        return ResponseEntity.ok(pedidoService.listarPedidosAcimaDe(valor));
+    }
+
+    @Operation(
+            summary = "Busca total de vendas de um restaurante",
+            description = "Retorna o somatório de vendas de todos os pedidos do restaurante informado."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Valor total retornado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")})
+    @GetMapping("/total/restaurante/{restauranteId}")
+    public ResponseEntity<BigDecimal> totalDeVendasPorRestaurante(
+            @Parameter(description = "Id do restaurante", example = "4")
+            @PathVariable Long restauranteId) {
+        return ResponseEntity.ok(pedidoService.totalDeVendasPorRestaurante(restauranteId));
+    }
+
+    @Operation(
             summary = "Listar pedidos por restaurante",
             description = "Retorna todos os pedidos destinados ao restaurante informado."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
+        @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
     })
     @GetMapping("/restaurante/{restauranteId}")
     public ResponseEntity<List<PedidoResponse>> listarPorRestaurante(

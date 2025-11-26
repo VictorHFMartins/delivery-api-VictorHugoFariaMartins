@@ -29,6 +29,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/produtos")
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
+@SecurityRequirement(name = "bearer-key")
 public class ProdutoController {
 
     private final ProdutoService produtoService;
@@ -131,16 +133,16 @@ public class ProdutoController {
     }
 
     @Operation(
-            summary = "Listar todos os produtos",
-            description = "Retorna todos os produtos cadastrados"
+            summary = "Listar todos os produtos disponíveis",
+            description = "Retorna todos os produtos disponíveis cadastrados"
     )
     @ApiResponse(
             responseCode = "200",
             description = "Lista retornada com sucesso"
     )
     @GetMapping
-    public ResponseEntity<List<ProdutoResponse>> listarTodos() {
-        return ResponseEntity.ok(produtoService.buscarTodos());
+    public ResponseEntity<List<ProdutoResponse>> listarTodosDisponiveis() {
+        return ResponseEntity.ok(produtoService.buscarTodosDisponiveis());
     }
 
     @Operation(
@@ -171,9 +173,9 @@ public class ProdutoController {
     public ResponseEntity<List<ProdutoResponse>> buscarPorFiltro(
             @Parameter(description = "Nome do produto", example = "Pizza")
             @RequestParam(required = false) String nome,
-            @Parameter(description = "Quantidade disponível", example = "10")
+            @Parameter(description = "Quantidade maior ou igual", example = "10")
             @RequestParam(required = false) Long quantidade,
-            @Parameter(description = "Preço exato", example = "29.90")
+            @Parameter(description = "Preço menor ou igual", example = "29.90")
             @RequestParam(required = false) BigDecimal preco,
             @Parameter(description = "Categoria do produto", example = "BEBIDAS")
             @RequestParam(required = false) CategoriaProduto categoria) {

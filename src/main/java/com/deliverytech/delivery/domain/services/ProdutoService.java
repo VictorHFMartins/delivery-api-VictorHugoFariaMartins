@@ -19,7 +19,7 @@ public interface ProdutoService {
 
     ProdutoResponse buscarPorId(Long produtoId);
 
-    List<ProdutoResponse> buscarTodos();
+    List<ProdutoResponse> buscarTodosDisponiveis();
 
     List<ProdutoResponse> buscarPorFiltro(String nome, Long quantidade, BigDecimal preco, CategoriaProduto categoriaProduto);
 

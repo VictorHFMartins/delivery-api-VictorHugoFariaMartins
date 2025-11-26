@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Size;
 @Schema(description = "Dados enviados para cadastrar ou atualizar um cliente")
 public record ClienteRequest(
 
-        @Schema(description = "Nome completo do cliente", example = "Victor Hugo Martins")
+        @Schema(description = "Nome completo do cliente", example = "Victor Martins")
         @NotBlank(message = "O nome é obrigatório")
         @Size(min = 3, max = 120, message = "O nome do cliente não pode ser menor que 3 carácteres nem exceder o limite de 120 caracteres")
         String nome,

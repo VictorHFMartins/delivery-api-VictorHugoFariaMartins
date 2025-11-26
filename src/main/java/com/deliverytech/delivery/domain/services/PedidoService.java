@@ -1,6 +1,7 @@
 package com.deliverytech.delivery.domain.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.deliverytech.delivery.api.dto.PedidoRequest;
@@ -20,14 +21,24 @@ public interface PedidoService {
 
     PedidoResponse buscarPorId(Long pedidoId);
 
+    PedidoResponse mudarStatusPedido(Long pedidoId, StatusPedido statusPedido);
+
     List<PedidoResponse> listarTodos();
 
     List<PedidoResponse> listarPorCliente(Long clienteId);
 
     List<PedidoResponse> listarPorRestaurante(Long restauranteId);
 
+    List<PedidoResponse> listarDezPrimeirosPorDataDePedido();
+
+    List<PedidoResponse> listarPedidosAcimaDe(BigDecimal valor);
+
+    List<PedidoResponse> ListarPorPeríodoEStatus(LocalDateTime inicio, LocalDateTime fim, StatusPedido status);
+
+    List<PedidoResponse> listarPedidosEntreDatas(LocalDateTime inicio, LocalDateTime fim);
+
     BigDecimal calcularTotal(Long pedidoId);
 
-    PedidoResponse mudarStatusPedido(Long pedidoId, StatusPedido statusPedido);
+    BigDecimal totalDeVendasPorRestaurante(Long restauranteId);
 
 }

@@ -234,7 +234,7 @@ public class RestauranteServiceImp implements RestauranteService {
         }
         if (taxaEntrega != null) {
             restaurantes = restaurantes.stream()
-                    .filter(r -> r.getTaxaEntrega().equals(taxaEntrega))
+                    .filter(r -> r.getTaxaEntrega().compareTo(taxaEntrega) <= 0)
                     .toList();
         } else {
             System.out.println("taxaEntrega não encontrado para taxa: " + taxaEntrega);

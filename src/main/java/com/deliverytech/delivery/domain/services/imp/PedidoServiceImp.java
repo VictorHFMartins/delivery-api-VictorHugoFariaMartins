@@ -1,6 +1,7 @@
 package com.deliverytech.delivery.domain.services.imp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -142,6 +143,32 @@ public class PedidoServiceImp implements PedidoService {
     }
 
     @Override
+    public List<PedidoResponse> listarDezPrimeirosPorDataDePedido() {
+        return pedidoRepository.findTop10ByOrderByDataPedidoDesc()
+                .stream().map(PedidoResponse::of).toList();
+    }
+
+    @Override
+    public List<PedidoResponse> listarPedidosEntreDatas(LocalDateTime inicio, LocalDateTime fim) {
+        return pedidoRepository.findByDataPedidoBetween(inicio, fim)
+                .stream().map(PedidoResponse::of).toList();
+    }
+
+    @Override
+    public List<PedidoResponse> listarPedidosAcimaDe(BigDecimal valor) {
+        return pedidoRepository.pedidosAcimaDe(valor).stream()
+                .map(PedidoResponse::of)
+                .toList();
+    }
+
+    @Override
+    public List<PedidoResponse> ListarPorPeríodoEStatus(LocalDateTime inicio, LocalDateTime fim, StatusPedido status) {
+        return pedidoRepository.relatorioPorPeriodoEStatus(inicio, fim, status).stream()
+                .map(PedidoResponse::of)
+                .toList();
+    }
+
+    @Override
     public BigDecimal calcularTotal(Long pedidoId) {
         Pedido pedido = pedidoRepository.findById(Objects.requireNonNull(pedidoId))
                 .orElseThrow(() -> new EntityNotFoundException("Pedido não encontrado para o id: " + pedidoId));
@@ -150,6 +177,11 @@ public class PedidoServiceImp implements PedidoService {
         pedidoRepository.save(pedido);
 
         return pedido.getValorTotal();
+    }
+
+    @Override
+    public BigDecimal totalDeVendasPorRestaurante(Long restauranteId) {
+        return pedidoRepository.totalVendasPorRestaurante(restauranteId);
     }
 
     @Override

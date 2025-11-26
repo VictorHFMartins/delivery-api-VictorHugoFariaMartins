@@ -53,7 +53,7 @@ public abstract class Usuario {
     protected List<Telefone> telefones;
 
     @ManyToOne
-    @JoinColumn(name = "endereco_id", nullable = false)
+    @JoinColumn(name = "endereco_id")
     protected Endereco endereco;
 
     @Column(nullable = false)
@@ -66,8 +66,22 @@ public abstract class Usuario {
     @Enumerated(EnumType.STRING)
     protected TipoUsuario tipoUsuario;
 
+    @Column(nullable = false, unique = true)
+    private String apelido;
+
+    @Column(nullable = false, length = 120)
+    private String senha;
+
     @PrePersist
     protected void onCreate() {
+
+        if (apelido == null || apelido.isBlank()) {
+            throw new RuntimeException("Apelido é obrigatório");
+        }
+        if (senha == null || senha.isBlank()) {
+            throw new RuntimeException("Senha é obrigatória");
+        }
+
         if (dataCadastro == null) {
             dataCadastro = LocalDateTime.now();
         }

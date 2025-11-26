@@ -7,9 +7,11 @@ import org.springframework.stereotype.Component;
 
 import com.deliverytech.delivery.api.exceptions.EntityNotFoundException;
 import com.deliverytech.delivery.domain.enums.TipoUsuario;
+import com.deliverytech.delivery.domain.model.Administrador;
 import com.deliverytech.delivery.domain.model.Cliente;
 import com.deliverytech.delivery.domain.model.Restaurante;
 import com.deliverytech.delivery.domain.model.Usuario;
+import com.deliverytech.delivery.domain.repository.AdministradorRepository;
 import com.deliverytech.delivery.domain.repository.ClienteRepository;
 import com.deliverytech.delivery.domain.repository.RestauranteRepository;
 
@@ -21,6 +23,7 @@ public class UsuarioValidator {
 
     private final ClienteRepository clienteRepository;
     private final RestauranteRepository restauranteRepository;
+    private final AdministradorRepository administradorRepository;
 
     public Usuario validarUsuario(Long usuarioId) {
         Objects.requireNonNull(usuarioId, "O id de usuário nunca deve ser nulo.");
@@ -35,6 +38,22 @@ public class UsuarioValidator {
         }
 
         throw new EntityNotFoundException("Usuario não encontrado com id: " + usuarioId);
+    }
+
+    public Administrador validarAdministrador(Long id) {
+
+        Usuario usuario = validarUsuario(id);
+
+        if (usuario.getTipoUsuario() != TipoUsuario.ADMINISTRADOR) {
+            throw new EntityNotFoundException(
+                    "O id " + id + " não pertence a um Administrador."
+            );
+        }
+
+        return administradorRepository.findById(Objects.requireNonNull(id))
+                .orElseThrow(() -> new EntityNotFoundException(
+                "administrador não encontrado para o id: " + id
+        ));
     }
 
     public Cliente validarCliente(Long id) {
