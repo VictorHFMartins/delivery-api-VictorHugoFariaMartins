@@ -2,6 +2,7 @@ package com.deliverytech.delivery.api.controller;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ public class AuthService {
                     new UsernamePasswordAuthenticationToken(
                             request.apelido(),
                             request.senha()));
-        } catch (Exception e) {
+        } catch (AuthenticationException e) {
             throw new RuntimeException("Apelido ou senha incorretos.");
         }
 
@@ -65,14 +66,10 @@ public class AuthService {
         }
 
         Usuario usuario = switch (request.tipoUsuario()) {
-            case CLIENTE ->
-                usuario = new Cliente();
-            case RESTAURANTE ->
-                usuario = new Restaurante();
-            case ADMINISTRADOR ->
-                usuario = new Administrador();
-            default ->
-                throw new BusinessException("Tipo de usuário inválido.");
+            case CLIENTE -> new Cliente();
+            case RESTAURANTE -> new Restaurante();
+            case ADMINISTRADOR -> new Administrador();
+            default -> throw new BusinessException("Tipo de usuário inválido.");
         };
 
         usuario.setNome(request.nome());
