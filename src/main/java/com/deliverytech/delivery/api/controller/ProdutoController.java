@@ -39,18 +39,22 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/produtos")
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
-@SecurityRequirement(name = "bearer-key")
+@SecurityRequirement(name = "bearerAuth")
 public class ProdutoController {
 
     private final ProdutoService produtoService;
 
     @Operation(
             summary = "Cadastrar produto",
-            description = "Cria um produto vinculado a um restaurante"
+            description = "Cria um produto vinculado a um restaurante.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    description = "Dados para criação de um produto",
+                    content = @Content(schema = @Schema(implementation = ProdutoRequest.class))
+            )
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Produto criado com sucesso",
-                content = @Content(schema = @Schema(implementation = ProdutoResponse.class))),
+        @ApiResponse(responseCode = "201", description = "Produto criado com sucesso"),
         @ApiResponse(responseCode = "400", description = "Erro de validação"),
         @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
     })
@@ -58,12 +62,7 @@ public class ProdutoController {
     public ResponseEntity<ProdutoResponse> cadastrar(
             @Parameter(description = "ID do restaurante", example = "5")
             @PathVariable Long restauranteId,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Dados para criação do produto",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = ProdutoRequest.class))
-            )
-            @RequestBody @Valid ProdutoRequest dto) {
+            @Valid @RequestBody ProdutoRequest dto) {
 
         ProdutoResponse produto = produtoService.criar(restauranteId, dto);
 
@@ -77,7 +76,12 @@ public class ProdutoController {
 
     @Operation(
             summary = "Atualizar produto",
-            description = "Atualiza os dados de um produto existente"
+            description = "Atualiza os dados de um produto existente.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    description = "Dados atualizados do produto",
+                    content = @Content(schema = @Schema(implementation = ProdutoRequest.class))
+            )
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Produto atualizado com sucesso"),
@@ -87,20 +91,15 @@ public class ProdutoController {
     public ResponseEntity<ProdutoResponse> atualizar(
             @Parameter(description = "ID do produto", example = "12")
             @PathVariable Long produtoId,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Dados atualizados do produto",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = ProdutoRequest.class))
-            )
-            @RequestBody @Valid ProdutoRequest dto) {
+            @Valid @RequestBody ProdutoRequest dto) {
 
         ProdutoResponse produto = produtoService.atualizar(produtoId, dto);
         return ResponseEntity.ok(produto);
     }
 
     @Operation(
-            summary = "Ativar / Inativar produto",
-            description = "Alterna o status do produto entre ativo e inativo"
+            summary = "Ativar ou inativar produto",
+            description = "Alterna o status do produto entre ativo e inativo."
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Status alterado com sucesso"),
@@ -117,7 +116,7 @@ public class ProdutoController {
 
     @Operation(
             summary = "Excluir produto",
-            description = "Remove um produto do sistema"
+            description = "Remove um produto do sistema."
     )
     @ApiResponses({
         @ApiResponse(responseCode = "204", description = "Produto removido"),
@@ -134,12 +133,9 @@ public class ProdutoController {
 
     @Operation(
             summary = "Listar todos os produtos disponíveis",
-            description = "Retorna todos os produtos disponíveis cadastrados"
+            description = "Retorna todos os produtos disponíveis."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Lista retornada com sucesso"
-    )
+    @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
     @GetMapping
     public ResponseEntity<List<ProdutoResponse>> listarTodosDisponiveis() {
         return ResponseEntity.ok(produtoService.buscarTodosDisponiveis());
@@ -147,7 +143,7 @@ public class ProdutoController {
 
     @Operation(
             summary = "Buscar produto por ID",
-            description = "Retorna um produto pelo seu identificador"
+            description = "Retorna os dados de um produto pelo ID."
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Produto encontrado"),
@@ -163,19 +159,16 @@ public class ProdutoController {
 
     @Operation(
             summary = "Buscar produtos por filtros",
-            description = "Filtra produtos por nome, quantidade, preço e categoria"
+            description = "Filtra produtos por nome, quantidade, preço e categoria."
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Lista filtrada retornada com sucesso"
-    )
+    @ApiResponse(responseCode = "200", description = "Lista filtrada retornada com sucesso")
     @GetMapping("/buscar")
     public ResponseEntity<List<ProdutoResponse>> buscarPorFiltro(
             @Parameter(description = "Nome do produto", example = "Pizza")
             @RequestParam(required = false) String nome,
-            @Parameter(description = "Quantidade maior ou igual", example = "10")
+            @Parameter(description = "Quantidade mínima", example = "10")
             @RequestParam(required = false) Long quantidade,
-            @Parameter(description = "Preço menor ou igual", example = "29.90")
+            @Parameter(description = "Preço máximo", example = "29.90")
             @RequestParam(required = false) BigDecimal preco,
             @Parameter(description = "Categoria do produto", example = "BEBIDAS")
             @RequestParam(required = false) CategoriaProduto categoria) {
@@ -188,7 +181,7 @@ public class ProdutoController {
 
     @Operation(
             summary = "Listar produtos de um restaurante",
-            description = "Retorna todos os produtos cadastrados em um restaurante"
+            description = "Retorna todos os produtos cadastrados em um restaurante."
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),

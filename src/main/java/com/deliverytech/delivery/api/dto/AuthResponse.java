@@ -17,8 +17,8 @@ public record AuthResponse(
         @Schema(description = "Apelido usado no login.", example = "victor.mtech")
         String apelido,
 
-        @Schema(description = "Cargo do usuario.", example = "ADMINISTRADOR")
-        String cargo,
+        @Schema(description = "Tipo do usuario.", example = "ADMINISTRADOR")
+        String tipoUsuario,
 
         @Schema(description = "E-mail do usuario.", example = "victor@mtech.com")
         String email

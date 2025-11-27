@@ -37,7 +37,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/enderecos")
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
-@SecurityRequirement(name = "bearer-key")
+@SecurityRequirement(name = "bearerAuth")
 public class EnderecoController {
 
     private final EnderecoService enderecoService;
@@ -60,7 +60,7 @@ public class EnderecoController {
                     required = true,
                     content = @Content(schema = @Schema(implementation = EnderecoRequest.class))
             )
-            @RequestBody @Valid EnderecoRequest dto) {
+            @Valid @RequestBody EnderecoRequest dto) {
 
         EnderecoResponse endereco = enderecoService.criar(usuarioId, dto);
 
@@ -92,7 +92,7 @@ public class EnderecoController {
                     required = true,
                     content = @Content(schema = @Schema(implementation = EnderecoRequest.class))
             )
-            @RequestBody @Valid EnderecoRequest dto) {
+            @Valid @RequestBody EnderecoRequest dto) {
 
         EnderecoResponse endereco = enderecoService.atualizar(usuarioId, enderecoId, dto);
         return ResponseEntity.ok(endereco);

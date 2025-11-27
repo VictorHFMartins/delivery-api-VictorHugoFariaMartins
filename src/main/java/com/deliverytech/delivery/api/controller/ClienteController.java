@@ -37,7 +37,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/clientes")
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
-@SecurityRequirement(name = "bearer-key")
+@SecurityRequirement(name = "bearerAuth")
 public class ClienteController {
 
     private final ClienteService clienteService;
@@ -47,9 +47,9 @@ public class ClienteController {
             description = "Cria um novo cliente, incluindo endereço e telefones."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Cliente criado com sucesso",
-                    content = @Content(schema = @Schema(implementation = ClienteResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Erro de validação")
+        @ApiResponse(responseCode = "201", description = "Cliente criado com sucesso",
+                content = @Content(schema = @Schema(implementation = ClienteResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Erro de validação")
     })
     @PostMapping
     public ResponseEntity<ClienteResponse> cadastrar(
@@ -58,7 +58,7 @@ public class ClienteController {
                     required = true,
                     content = @Content(schema = @Schema(implementation = ClienteRequest.class))
             )
-            @RequestBody @Valid ClienteRequest dto) {
+            @Valid @RequestBody ClienteRequest dto) {
 
         ClienteResponse cliente = clienteService.criar(dto);
 
@@ -76,20 +76,19 @@ public class ClienteController {
             description = "Atualiza todos os dados do cliente, incluindo endereço e telefones."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+        @ApiResponse(responseCode = "200", description = "Cliente atualizado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @PutMapping("/{id}")
     public ResponseEntity<ClienteResponse> atualizar(
             @Parameter(description = "ID do cliente", example = "10")
             @PathVariable Long id,
-
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Dados atualizados do cliente",
                     required = true,
                     content = @Content(schema = @Schema(implementation = ClienteRequest.class))
             )
-            @RequestBody @Valid ClienteRequest dto) {
+            @Valid @RequestBody ClienteRequest dto) {
 
         ClienteResponse cliente = clienteService.atualizar(id, dto);
         return ResponseEntity.ok(cliente);
@@ -100,8 +99,8 @@ public class ClienteController {
             description = "Alterna o status do cliente entre ATIVO e INATIVO."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Status alterado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+        @ApiResponse(responseCode = "200", description = "Status alterado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @PatchMapping("/{id}/toggle-status")
     public ResponseEntity<ClienteResponse> ativarDesativar(
@@ -117,8 +116,8 @@ public class ClienteController {
             description = "Remove o cliente definitivamente do sistema."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Cliente excluído"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+        @ApiResponse(responseCode = "204", description = "Cliente excluído"),
+        @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(
@@ -134,8 +133,8 @@ public class ClienteController {
             description = "Retorna um cliente específico."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
-            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+        @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
+        @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @GetMapping("/{id}")
     public ResponseEntity<ClienteResponse> buscarPorId(
@@ -178,26 +177,21 @@ public class ClienteController {
                     """
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Parâmetros de filtro inválidos")
+        @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Parâmetros de filtro inválidos")
     })
     @GetMapping("/buscar")
     public ResponseEntity<List<ClienteResponse>> buscar(
             @Parameter(description = "Nome do cliente", example = "Ana")
             @RequestParam(required = false) String nome,
-
             @Parameter(description = "Email do cliente", example = "ana@gmail.com")
             @RequestParam(required = false) String email,
-
             @Parameter(description = "CEP do cliente", example = "01001000")
             @RequestParam(required = false) String cep,
-
             @Parameter(description = "Cidade do cliente", example = "São Paulo")
             @RequestParam(required = false) String cidade,
-
             @Parameter(description = "Estado (UF)", example = "SP")
             @RequestParam(required = false) String estado,
-
             @Parameter(description = "Telefone do cliente", example = "11988887777")
             @RequestParam(required = false) String telefone) {
 

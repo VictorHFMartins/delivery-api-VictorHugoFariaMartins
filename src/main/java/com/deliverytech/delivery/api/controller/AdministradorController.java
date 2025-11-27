@@ -32,12 +32,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
-@Tag(name = "administradores", description = "Endpoints para gerenciamento de administradores")
+@Tag(name = "Administradores", description = "Endpoints para gerenciamento de administradores")
 @RestController
 @RequestMapping("/administradores")
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
-@SecurityRequirement(name = "bearer-key")
+@SecurityRequirement(name = "bearerAuth")
 public class AdministradorController {
 
     private final AdministradorService administradorService;
@@ -47,9 +47,9 @@ public class AdministradorController {
             description = "Cria um novo administrador, incluindo endereço e telefones."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "administrador criado com sucesso",
-                    content = @Content(schema = @Schema(implementation = AdministradorResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Erro de validação")
+        @ApiResponse(responseCode = "201", description = "Administrador criado com sucesso",
+                content = @Content(schema = @Schema(implementation = AdministradorResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Erro de validação")
     })
     @PostMapping
     public ResponseEntity<AdministradorResponse> cadastrar(
@@ -76,14 +76,13 @@ public class AdministradorController {
             description = "Atualiza todos os dados do administrador, incluindo endereço e telefones."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "administrador atualizado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "administrador não encontrado")
+        @ApiResponse(responseCode = "200", description = "Administrador atualizado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Administrador não encontrado")
     })
     @PutMapping("/{id}")
     public ResponseEntity<AdministradorResponse> atualizar(
             @Parameter(description = "ID do administrador", example = "10")
             @PathVariable Long id,
-
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Dados atualizados do administrador",
                     required = true,
@@ -100,8 +99,8 @@ public class AdministradorController {
             description = "Alterna o status do administrador entre ATIVO e INATIVO."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Status alterado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "administrador não encontrado")
+        @ApiResponse(responseCode = "200", description = "Status alterado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Administrador não encontrado")
     })
     @PatchMapping("/{id}/toggle-status")
     public ResponseEntity<AdministradorResponse> ativarDesativar(
@@ -117,8 +116,8 @@ public class AdministradorController {
             description = "Remove o administrador definitivamente do sistema."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "administrador excluído"),
-            @ApiResponse(responseCode = "404", description = "administrador não encontrado")
+        @ApiResponse(responseCode = "204", description = "Administrador excluído"),
+        @ApiResponse(responseCode = "404", description = "Administrador não encontrado")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(
@@ -134,8 +133,8 @@ public class AdministradorController {
             description = "Retorna um administrador específico."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "administrador encontrado"),
-            @ApiResponse(responseCode = "404", description = "administrador não encontrado")
+        @ApiResponse(responseCode = "200", description = "Administrador encontrado"),
+        @ApiResponse(responseCode = "404", description = "Administrador não encontrado")
     })
     @GetMapping("/{id}")
     public ResponseEntity<AdministradorResponse> buscarPorId(
@@ -178,26 +177,21 @@ public class AdministradorController {
                     """
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Parâmetros de filtro inválidos")
+        @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Parâmetros de filtro inválidos")
     })
     @GetMapping("/buscar")
     public ResponseEntity<List<AdministradorResponse>> buscar(
             @Parameter(description = "Nome do administrador", example = "Ana")
             @RequestParam(required = false) String nome,
-
             @Parameter(description = "Email do administrador", example = "ana@gmail.com")
             @RequestParam(required = false) String email,
-
             @Parameter(description = "CEP do administrador", example = "01001000")
             @RequestParam(required = false) String cep,
-
             @Parameter(description = "Cidade do administrador", example = "São Paulo")
             @RequestParam(required = false) String cidade,
-
             @Parameter(description = "Estado (UF)", example = "SP")
             @RequestParam(required = false) String estado,
-
             @Parameter(description = "Telefone do administrador", example = "11988887777")
             @RequestParam(required = false) String telefone) {
 

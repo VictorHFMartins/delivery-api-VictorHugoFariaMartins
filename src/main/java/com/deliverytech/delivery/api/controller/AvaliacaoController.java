@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/restaurantes/{restauranteId}/avaliacoes")
-@SecurityRequirement(name = "bearer-key")
+@SecurityRequirement(name = "bearerAuth")
 public class AvaliacaoController {
 
     private final AvaliacaoService avaliacaoService;
@@ -45,22 +45,21 @@ public class AvaliacaoController {
             description = "Cria uma nova avaliação para o restaurante informado."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Avaliação registrada com sucesso",
-                    content = @Content(schema = @Schema(implementation = AvaliacaoResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Erro de validação"),
-            @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
+        @ApiResponse(responseCode = "201", description = "Avaliação registrada com sucesso",
+                content = @Content(schema = @Schema(implementation = AvaliacaoResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Erro de validação"),
+        @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
     })
     @PostMapping
     public ResponseEntity<AvaliacaoResponse> avaliar(
             @Parameter(description = "ID do restaurante avaliado", example = "12")
             @PathVariable Long restauranteId,
-
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Dados da avaliação",
                     required = true,
                     content = @Content(schema = @Schema(implementation = AvaliacaoRequest.class))
             )
-            @RequestBody @Valid AvaliacaoRequest dto) {
+            @Valid @RequestBody AvaliacaoRequest dto) {
 
         AvaliacaoResponse avaliacao = avaliacaoService.criar(restauranteId, dto);
 
@@ -77,20 +76,20 @@ public class AvaliacaoController {
             description = "Permite ao restaurante responder uma avaliação existente."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Resposta registrada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Avaliação não encontrada")
+        @ApiResponse(responseCode = "201", description = "Resposta registrada com sucesso",
+                content = @Content(schema = @Schema(implementation = AvaliacaoResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Avaliação não encontrada")
     })
     @PostMapping("/{avaliacaoId}/resposta")
     public ResponseEntity<AvaliacaoResponse> responder(
             @Parameter(description = "ID da avaliação", example = "44")
             @PathVariable Long avaliacaoId,
-
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Conteúdo da resposta",
                     required = true,
                     content = @Content(schema = @Schema(implementation = respostaAvaliacaoRequest.class))
             )
-            @RequestBody @Valid respostaAvaliacaoRequest dto) {
+            @Valid @RequestBody respostaAvaliacaoRequest dto) {
 
         AvaliacaoResponse resposta = avaliacaoService.responder(avaliacaoId, dto.resposta());
 
@@ -107,23 +106,21 @@ public class AvaliacaoController {
             description = "Edita uma avaliação existente vinculada ao restaurante."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Avaliação atualizada"),
-            @ApiResponse(responseCode = "404", description = "Avaliação ou restaurante não encontrado")
+        @ApiResponse(responseCode = "200", description = "Avaliação atualizada"),
+        @ApiResponse(responseCode = "404", description = "Avaliação ou restaurante não encontrado")
     })
     @PutMapping("/{avaliacaoId}")
     public ResponseEntity<AvaliacaoResponse> atualizar(
             @Parameter(description = "ID do restaurante", example = "12")
             @PathVariable Long restauranteId,
-
             @Parameter(description = "ID da avaliação", example = "33")
             @PathVariable Long avaliacaoId,
-
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Dados atualizados da avaliação",
                     required = true,
                     content = @Content(schema = @Schema(implementation = AvaliacaoRequest.class))
             )
-            @RequestBody @Valid AvaliacaoRequest dto) {
+            @Valid @RequestBody AvaliacaoRequest dto) {
 
         AvaliacaoResponse avaliacao = avaliacaoService.editar(restauranteId, avaliacaoId, dto);
         return ResponseEntity.ok(avaliacao);
@@ -134,8 +131,8 @@ public class AvaliacaoController {
             description = "Remove permanentemente uma avaliação."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Avaliação removida com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Avaliação não encontrada")
+        @ApiResponse(responseCode = "204", description = "Avaliação removida com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Avaliação não encontrada")
     })
     @DeleteMapping("/{avaliacaoId}")
     public ResponseEntity<Void> remover(

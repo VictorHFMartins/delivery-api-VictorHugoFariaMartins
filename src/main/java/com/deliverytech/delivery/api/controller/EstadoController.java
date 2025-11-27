@@ -36,7 +36,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/estados")
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
-@SecurityRequirement(name = "bearer-key")
+@SecurityRequirement(name = "bearerAuth")
 public class EstadoController {
 
     private final EstadoService estadoService;
@@ -46,9 +46,9 @@ public class EstadoController {
             description = "Cria um novo estado com nome e UF."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Estado criado com sucesso",
-                    content = @Content(schema = @Schema(implementation = EstadoResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Erro de validação")
+        @ApiResponse(responseCode = "201", description = "Estado criado com sucesso",
+                content = @Content(schema = @Schema(implementation = EstadoResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Erro de validação")
     })
     @PostMapping
     public ResponseEntity<EstadoResponse> cadastrar(
@@ -57,7 +57,7 @@ public class EstadoController {
                     required = true,
                     content = @Content(schema = @Schema(implementation = EstadoRequest.class))
             )
-            @RequestBody @Valid EstadoRequest dto) {
+            @Valid @RequestBody EstadoRequest dto) {
 
         EstadoResponse estado = estadoService.criar(dto);
 
@@ -75,20 +75,19 @@ public class EstadoController {
             description = "Atualiza os dados de um estado existente."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Estado atualizado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Estado não encontrado")
+        @ApiResponse(responseCode = "200", description = "Estado atualizado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Estado não encontrado")
     })
     @PutMapping("/{id}")
     public ResponseEntity<EstadoResponse> atualizar(
             @Parameter(description = "ID do estado", example = "1")
             @PathVariable Long id,
-
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Dados atualizados do estado",
                     required = true,
                     content = @Content(schema = @Schema(implementation = EstadoRequest.class))
             )
-            @RequestBody @Valid EstadoRequest dto) {
+            @Valid @RequestBody EstadoRequest dto) {
 
         EstadoResponse estado = estadoService.alterar(id, dto);
         return ResponseEntity.ok(estado);
@@ -99,8 +98,8 @@ public class EstadoController {
             description = "Remove um estado existente."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Estado removido com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Estado não encontrado")
+        @ApiResponse(responseCode = "204", description = "Estado removido com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Estado não encontrado")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(
@@ -126,8 +125,8 @@ public class EstadoController {
             description = "Retorna os dados de um estado pelo seu ID."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Estado encontrado"),
-            @ApiResponse(responseCode = "404", description = "Estado não encontrado")
+        @ApiResponse(responseCode = "200", description = "Estado encontrado"),
+        @ApiResponse(responseCode = "404", description = "Estado não encontrado")
     })
     @GetMapping("/{id}")
     public ResponseEntity<EstadoResponse> buscarPorId(
@@ -142,8 +141,8 @@ public class EstadoController {
             description = "Busca um estado pelo seu código UF (ex: SP, RJ, MG)."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Estado encontrado"),
-            @ApiResponse(responseCode = "404", description = "UF não encontrada")
+        @ApiResponse(responseCode = "200", description = "Estado encontrado"),
+        @ApiResponse(responseCode = "404", description = "UF não encontrada")
     })
     @GetMapping("/buscar")
     public ResponseEntity<EstadoResponse> buscarPorUf(

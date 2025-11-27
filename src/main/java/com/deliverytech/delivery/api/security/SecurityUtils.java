@@ -35,25 +35,25 @@ public class SecurityUtils {
         return getCurrentUser().getEmail();
     }
 
-    /** Cargo (ROLE) */
-    public static String getCurrentUserCargo() {
+    /** TipoUsuario (ROLE) */
+    public static String getCurrentUserTipoUsuario() {
         return getCurrentUser().getTipoUsuario().name();
     }
 
-    /** Verifica cargo */
-    public static boolean hasCargo(String cargo) {
-        return getCurrentUser().getTipoUsuario().name().equalsIgnoreCase(cargo);
+    /** Verifica Tipo de Usuario */
+    public static boolean hasTipoUsuario(String tipoUsuario) {
+        return getCurrentUser().getTipoUsuario().name().equalsIgnoreCase(tipoUsuario);
     }
 
     public static boolean isCliente() {
-        return hasCargo("CLIENTE");
+        return hasTipoUsuario("CLIENTE");
     }
 
     public static boolean isAdministrador() {
-        return hasCargo("ADMINISTRADOR");
+        return hasTipoUsuario("ADMINISTRADOR");
     }
 
     public static boolean isAtendente() {
-        return hasCargo("RESTAURANTE");
+        return hasTipoUsuario("RESTAURANTE");
     }
 }

@@ -36,7 +36,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/ceps")
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
-@SecurityRequirement(name = "bearer-key")
+@SecurityRequirement(name = "bearerAuth")
 public class CepController {
 
     private final CepService cepService;
@@ -57,7 +57,7 @@ public class CepController {
                     required = true,
                     content = @Content(schema = @Schema(implementation = CepRequest.class))
             )
-            @RequestBody @Valid CepRequest dto) {
+            @Valid @RequestBody CepRequest dto) {
 
         CepResponse cep = cepService.criar(dto);
 
@@ -88,7 +88,7 @@ public class CepController {
                     required = true,
                     content = @Content(schema = @Schema(implementation = CepRequest.class))
             )
-            @RequestBody @Valid CepRequest dto) {
+            @Valid @RequestBody CepRequest dto) {
 
         CepResponse cep = cepService.alterar(id, dto);
         return ResponseEntity.ok(cep);
@@ -139,7 +139,7 @@ public class CepController {
 
     @Operation(
             summary = "Buscar CEP por código",
-            description = "Retorna o CEP correspondente ao código informado (ex: 01001-000)."
+            description = "Retorna o CEP correspondente ao código informado (ex: 01001000)."
     )
     @ApiResponse(responseCode = "200", description = "CEP encontrado")
     @GetMapping("/codigo")

@@ -32,17 +32,17 @@ public class AuthService {
     public AuthResponse login(AuthRequest request) {
 
         try {
-            authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.apelido(),
-                            request.senha()));
+            authManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    request.apelido(),
+                    request.senha()
+            ));
         } catch (AuthenticationException e) {
-            throw new RuntimeException("Apelido ou senha incorretos.");
+            throw new BusinessException("Apelido ou senha incorretos.");
         }
 
         Usuario usuario = usuarioRepository
                 .findByApelido(request.apelido())
-                .orElseThrow(() -> new RuntimeException("usuario não encontrado."));
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado."));
 
         UserPrincipal principal = new UserPrincipal(usuario);
         String token = jwtUtil.generateToken(principal, usuario);
@@ -53,7 +53,8 @@ public class AuthService {
                 usuario.getNome(),
                 usuario.getApelido(),
                 usuario.getTipoUsuario().name(),
-                usuario.getEmail());
+                usuario.getEmail()
+        );
     }
 
     public AuthResponse register(UsuarioRegisterRequest request) {
@@ -61,15 +62,18 @@ public class AuthService {
         if (usuarioRepository.existsByApelido(request.apelido())) {
             throw new BusinessException("Este apelido já está em uso.");
         }
+
         if (usuarioRepository.existsByEmail(request.email())) {
             throw new BusinessException("Este e-mail já está em uso.");
         }
 
         Usuario usuario = switch (request.tipoUsuario()) {
-            case CLIENTE -> new Cliente();
-            case RESTAURANTE -> new Restaurante();
-            case ADMINISTRADOR -> new Administrador();
-            default -> throw new BusinessException("Tipo de usuário inválido.");
+            case CLIENTE ->
+                new Cliente();
+            case RESTAURANTE ->
+                new Restaurante();
+            case ADMINISTRADOR ->
+                new Administrador();
         };
 
         usuario.setNome(request.nome());
@@ -89,6 +93,7 @@ public class AuthService {
                 usuario.getNome(),
                 usuario.getApelido(),
                 usuario.getTipoUsuario().name(),
-                usuario.getEmail());
+                usuario.getEmail()
+        );
     }
 }

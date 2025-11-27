@@ -26,64 +26,67 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final CustomUserDetailsService customUserDetailsService;
 
-@Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http
-            .csrf(csrf -> csrf.disable())
-            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
-            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-            // 🔐 AUTORIZAÇÃO POR CARGOS
-            .authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests(auth -> auth
 
-                    // Rotas públicas
-                    .requestMatchers(
-                            "/api/auth/**",
-                            "/swagger-ui.html",
-                            "/swagger-ui/**",
-                            "/v3/api-docs/**",
-                            "/api-docs/**",
-                            "/h2-console/**"
-                    ).permitAll()
+                        // PUBLIC
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/api-docs/**",
+                                "/h2-console/**"
+                        ).permitAll()
 
-                    // 🔵 CLIENTES — podem acessar apenas sua área
-                    .requestMatchers("/clientes/**").hasAnyRole("CLIENTE", "ADMINISTRADOR")
+                        // ESPECÍFICO PRIMEIRO → avaliações precisam liberar CLIENTE
+                        .requestMatchers("/restaurantes/*/avaliacoes/**")
+                                .hasAnyRole("CLIENTE", "RESTAURANTE", "ADMINISTRADOR")
 
-                    // 🔵 RESTAURANTES — gerenciamento de restaurante e produtos
-                    .requestMatchers("/restaurantes/**").hasAnyRole("RESTAURANTE", "ADMINISTRADOR")
-                    .requestMatchers("/produtos/**").hasAnyRole("RESTAURANTE", "ADMINISTRADOR")
+                        // CLIENTES
+                        .requestMatchers("/clientes/**")
+                                .hasAnyRole("CLIENTE", "ADMINISTRADOR")
 
-                    // 🔵 AVALIAÇÕES — tanto cliente quanto restaurante interagem
-                    .requestMatchers("/restaurantes/*/avaliacoes/**")
-                        .hasAnyRole("CLIENTE", "RESTAURANTE", "ADMINISTRADOR")
+                        // RESTAURANTES
+                        .requestMatchers("/restaurantes/**")
+                                .hasAnyRole("RESTAURANTE", "ADMINISTRADOR")
 
-                    // 🔵 PEDIDOS
-                    // cliente cria / lista os próprios
-                    .requestMatchers("/pedidos/cliente/**").hasAnyRole("CLIENTE", "ADMINISTRADOR")
+                        // PRODUTOS
+                        .requestMatchers("/produtos/**")
+                                .hasAnyRole("RESTAURANTE", "ADMINISTRADOR")
 
-                    // restaurante acessa pedidos que chegam a ele
-                    .requestMatchers("/pedidos/restaurante/**").hasAnyRole("RESTAURANTE", "ADMINISTRADOR")
+                        // PEDIDOS
+                        .requestMatchers("/pedidos/cliente/**")
+                                .hasAnyRole("CLIENTE", "ADMINISTRADOR")
 
-                    // Endpoints gerais de pedidos só admin
-                    .requestMatchers("/pedidos/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/pedidos/restaurante/**")
+                                .hasAnyRole("RESTAURANTE", "ADMINISTRADOR")
 
-                    // 🔵 Endereços, telefones, cidades, estados, CEPs → admin
-                    .requestMatchers(
-                            "/enderecos/**",
-                            "/telefones/**",
-                            "/estados/**",
-                            "/cidades/**",
-                            "/ceps/**"
-                    ).hasRole("ADMINISTRADOR")
+                        .requestMatchers("/pedidos/**")
+                                .hasRole("ADMINISTRADOR")
 
-                    // Qualquer outra rota exige login
-                    .anyRequest().authenticated()
-            )
+                        // SOMENTE ADMIN
+                        .requestMatchers(
+                                "/enderecos/**",
+                                "/telefones/**",
+                                "/estados/**",
+                                "/cidades/**",
+                                "/ceps/**"
+                        ).hasRole("ADMINISTRADOR")
 
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            .build();
-}
+                        .anyRequest().authenticated()
+                )
+
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(

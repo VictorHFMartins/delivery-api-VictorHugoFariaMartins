@@ -36,7 +36,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/cidades")
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
-@SecurityRequirement(name = "bearer-key")
+@SecurityRequirement(name = "bearerAuth")
 public class CidadeController {
 
     private final CidadeService cidadeService;
@@ -46,9 +46,9 @@ public class CidadeController {
             description = "Cria uma nova cidade vinculada a um estado existente."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Cidade criada com sucesso",
-                    content = @Content(schema = @Schema(implementation = CidadeResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Erro de validação")
+        @ApiResponse(responseCode = "201", description = "Cidade criada com sucesso",
+                content = @Content(schema = @Schema(implementation = CidadeResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Erro de validação")
     })
     @PostMapping
     public ResponseEntity<CidadeResponse> cadastrar(
@@ -57,7 +57,7 @@ public class CidadeController {
                     required = true,
                     content = @Content(schema = @Schema(implementation = CidadeRequest.class))
             )
-            @RequestBody @Valid CidadeRequest dto) {
+            @Valid @RequestBody CidadeRequest dto) {
 
         CidadeResponse cidade = cidadeService.criar(dto);
 
@@ -74,20 +74,19 @@ public class CidadeController {
             description = "Atualiza os dados de uma cidade existente."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Cidade atualizada com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Cidade não encontrada")
+        @ApiResponse(responseCode = "200", description = "Cidade atualizada com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Cidade não encontrada")
     })
     @PutMapping("/{id}")
     public ResponseEntity<CidadeResponse> atualizar(
             @Parameter(description = "ID da cidade", example = "12")
             @PathVariable Long id,
-
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Novos dados para atualizar a cidade",
                     required = true,
                     content = @Content(schema = @Schema(implementation = CidadeRequest.class))
             )
-            @RequestBody @Valid CidadeRequest dto) {
+            @Valid @RequestBody CidadeRequest dto) {
 
         CidadeResponse cidade = cidadeService.alterar(id, dto);
         return ResponseEntity.ok(cidade);
@@ -98,8 +97,8 @@ public class CidadeController {
             description = "Remove uma cidade pelo seu ID."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Cidade removida com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Cidade não encontrada")
+        @ApiResponse(responseCode = "204", description = "Cidade removida com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Cidade não encontrada")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(
@@ -125,8 +124,8 @@ public class CidadeController {
             description = "Retorna os dados de uma cidade específica pelo seu ID."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Cidade encontrada"),
-            @ApiResponse(responseCode = "404", description = "Cidade não encontrada")
+        @ApiResponse(responseCode = "200", description = "Cidade encontrada"),
+        @ApiResponse(responseCode = "404", description = "Cidade não encontrada")
     })
     @GetMapping("/{id}")
     public ResponseEntity<CidadeResponse> buscarPorId(
