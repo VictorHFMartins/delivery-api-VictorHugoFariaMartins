@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.deliverytech.delivery.api.dto.ClienteRankingResponse;
 import com.deliverytech.delivery.api.dto.ClienteRequest;
 import com.deliverytech.delivery.api.dto.ClienteResponse;
 import com.deliverytech.delivery.domain.services.ClienteService;
@@ -152,6 +153,16 @@ public class ClienteController {
     @GetMapping("/ativos")
     public ResponseEntity<List<ClienteResponse>> listarAtivos() {
         return ResponseEntity.ok(clienteService.listarPorStatusAtivo());
+    }
+
+    @Operation(
+            summary = "Listar ranking de clientes por número de pedidos",
+            description = "Retorna lista com clientes organizados por numeros de pedidos."
+    )
+    @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
+    @GetMapping("/pedidos/ranking")
+    public List<ClienteRankingResponse> rankingClientes() {
+        return clienteService.rankingClientes();
     }
 
     @Operation(

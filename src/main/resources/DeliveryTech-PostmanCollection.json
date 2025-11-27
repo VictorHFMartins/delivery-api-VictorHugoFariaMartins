@@ -263,7 +263,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nome\": \"Restaurante Teste\",\n  \"email\": \"contato@restaurante.com\",\n  \"telefones\": [\n    {\"ddd\": \"11\", \"numero\": \"999888777\", \"tipoTelefone\": \"FIXO\"}\n  ],\n  \"endereco\": {\n    \"logradouro\": \"Av Paulista\",\n    \"tipoLogradouro\": \"AVENIDA\",\n    \"numero\": \"1000\",\n    \"complemento\": \"Sala 10\",\n    \"bairro\": \"Bela Vista\",\n    \"cepCodigo\": \"01311000\",\n    \"cidadeId\": 1,\n    \"longitude\": -46.6512,\n    \"latitude\": -23.5640\n  },\n  \"cnpj\": \"12.345.678/0001-00\",\n  \"classe\": \"BRASILEIRO\",\n  \"estado\": \"ABERTO\",\n  \"horarioAbertura\": \"08:00:00\",\n  \"horarioFechamento\": \"22:00:00\",\n  \"taxaEntrega\": 8.50\n}"
+              "raw": "{\n  \"nome\": \"Restaurante Teste\",\n  \"email\": \"contato@restaurante.com\",\n  \"telefones\": [\n    {\"ddd\": \"11\", \"numero\": \"999888777\", \"tipoTelefone\": \"FIXO\"}\n  ],\n  \"endereco\": {\n    \"logradouro\": \"Av Paulista\",\n    \"tipoLogradouro\": \"AVENIDA\",\n    \"numero\": \"1000\",\n    \"complemento\": \"Sala 10\",\n    \"bairro\": \"Bela Vista\",\n    \"cepCodigo\": \"01311000\",\n    \"cidadeId\": 1,\n    \"longitude\": -46.6512,\n    \"latitude\": -23.5640\n  },\n  \"cnpj\": \"12.345.678/0001-00\",\n  \"classe\": \"BRASILEIRO\",\n  \"estado\": \"ABERTO\",\n  \"horarioAbertura\": \"08:00:00\",\n  \"horarioFechamento\": \"22:00:00\",\n}"
             },
             "url": "{{base_url}}/restaurantes"
           }
@@ -280,7 +280,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nome\": \"Restaurante Atualizado\",\n  \"email\": \"novoemail@rest.com\",\n  \"telefones\": [\n    {\"ddd\": \"11\", \"numero\": \"900000000\", \"tipoTelefone\": \"WHATSAPP\"}\n  ],\n  \"endereco\": {\n    \"logradouro\": \"Rua Nova\",\n    \"tipoLogradouro\": \"RUA\",\n    \"numero\": \"200\",\n    \"complemento\": \"Loja 2\",\n    \"bairro\": \"Centro\",\n    \"cepCodigo\": \"01302000\",\n    \"cidadeId\": 1,\n    \"longitude\": -46.6400,\n    \"latitude\": -23.5500\n  },\n  \"cnpj\": \"12.345.678/0001-00\",\n  \"classe\": \"ITALIANO\",\n  \"estado\": \"FECHADO\",\n  \"horarioAbertura\": \"10:00:00\",\n  \"horarioFechamento\": \"23:00:00\",\n  \"taxaEntrega\": 10.00\n}"
+              "raw": "{\n  \"nome\": \"Restaurante Atualizado\",\n  \"email\": \"novoemail@rest.com\",\n  \"telefones\": [\n    {\"ddd\": \"11\", \"numero\": \"900000000\", \"tipoTelefone\": \"WHATSAPP\"}\n  ],\n  \"endereco\": {\n    \"logradouro\": \"Rua Nova\",\n    \"tipoLogradouro\": \"RUA\",\n    \"numero\": \"200\",\n    \"complemento\": \"Loja 2\",\n    \"bairro\": \"Centro\",\n    \"cepCodigo\": \"01302000\",\n    \"cidadeId\": 1,\n    \"longitude\": -46.6400,\n    \"latitude\": -23.5500\n  },\n  \"cnpj\": \"12.345.678/0001-00\",\n  \"classe\": \"ITALIANO\",\n  \"estado\": \"FECHADO\",\n  \"horarioAbertura\": \"10:00:00\",\n  \"horarioFechamento\": \"23:00:00\",\n }"
             },
             "url": "{{base_url}}/restaurantes/1"
           }
@@ -303,7 +303,7 @@
           "name": "Buscar restaurantes com filtro",
           "request": {
             "method": "GET",
-            "url": "{{base_url}}/restaurantes/buscar?email=&numeroTelefone=&taxaEntrega=&nome=&horarioAbertura=&horarioFechamento=&categoriaRestaurante="
+            "url": "{{base_url}}/restaurantes/buscar?email=&numeroTelefone=&nome=&horarioAbertura=&horarioFechamento=&categoriaRestaurante="
           }
         }
       ]

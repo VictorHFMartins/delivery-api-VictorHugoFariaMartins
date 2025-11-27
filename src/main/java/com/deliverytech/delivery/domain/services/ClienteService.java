@@ -2,6 +2,7 @@ package com.deliverytech.delivery.domain.services;
 
 import java.util.List;
 
+import com.deliverytech.delivery.api.dto.ClienteRankingResponse;
 import com.deliverytech.delivery.api.dto.ClienteRequest;
 import com.deliverytech.delivery.api.dto.ClienteResponse;
 
@@ -22,5 +23,7 @@ public interface ClienteService {
     List<ClienteResponse> buscarComFiltros(String nome, String email, String cep, String cidade, String estado, String telefone);
 
     List<ClienteResponse> listarTodos();
+
+    List<ClienteRankingResponse> rankingClientes();
 
 }

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
 
+import com.deliverytech.delivery.api.dto.RestauranteFreteResponse;
 import com.deliverytech.delivery.api.dto.RestauranteRequest;
 import com.deliverytech.delivery.api.dto.RestauranteResponse;
 import com.deliverytech.delivery.domain.enums.CategoriaRestaurante;
@@ -26,13 +27,16 @@ public interface RestauranteService {
 
     List<RestauranteResponse> listarPorRankingTop5();
 
+    BigDecimal totalDeVendasPorRestaurante(Long restauranteId);
+
     List<RestauranteResponse> buscarPorFiltro(
             String email,
             String numeroTelefone,
-            BigDecimal taxaEntrega,
             String nome,
             LocalTime horarioAbertura,
             LocalTime horarioFechamento,
             CategoriaRestaurante categoriaRestaurante);
+
+    List<RestauranteFreteResponse> listarComFreteOrdenado(Long clienteId);
 
 }

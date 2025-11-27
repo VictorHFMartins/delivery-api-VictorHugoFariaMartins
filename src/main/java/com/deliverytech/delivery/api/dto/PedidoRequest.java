@@ -1,6 +1,8 @@
 package com.deliverytech.delivery.api.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -23,6 +25,9 @@ public record PedidoRequest(
         @NotNull(message = "Deve haver ao menos um item no pedido.")
         @Valid
         List<ItemPedidoRequest> itens,
+
+        @Schema(description = "Desconto aplicado ao pedido", example = "10.50")
+        Optional<BigDecimal> desconto, 
 
         @Schema(description = "Observações adicionais do pedido", example = "Sem cebola, por favor")
         @Length(max = 250, message = "Limite máximo de 250 caracteres.")

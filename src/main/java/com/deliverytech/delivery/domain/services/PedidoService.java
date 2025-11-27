@@ -39,6 +39,4 @@ public interface PedidoService {
 
     BigDecimal calcularTotal(Long pedidoId);
 
-    BigDecimal totalDeVendasPorRestaurante(Long restauranteId);
-
 }

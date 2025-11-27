@@ -1,5 +1,4 @@
 package com.deliverytech.delivery.api.dto;
-import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import com.deliverytech.delivery.domain.enums.EstadoRestaurante;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -55,10 +53,5 @@ public record RestauranteRequest(
 
         @Schema(description = "Horário de fechamento", example = "22:00")
         @NotNull(message = "O horário de fechamento é obrigatório")
-        LocalTime horarioFechamento,
-
-        @Schema(description = "Taxa cobrada pela entrega", example = "7.50")
-        @NotNull(message = "A taxa de entrega é obrigatória")
-        @DecimalMin(value = "0.0", message = "A taxa de entrega não pode ser negativa")
-        BigDecimal taxaEntrega
+        LocalTime horarioFechamento
 ) {}

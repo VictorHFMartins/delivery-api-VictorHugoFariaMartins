@@ -1,7 +1,6 @@
 package com.deliverytech.delivery.domain.model;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -61,8 +60,14 @@ public class Pedido {
     @Column(name = "valor_total", nullable = false, precision = 10, scale = 2)
     private BigDecimal valorTotal = BigDecimal.ZERO;
 
+    @Column(nullable = true, precision = 10, scale = 2)
+    private BigDecimal desconto = BigDecimal.ZERO;
+
     @Column(length = 255)
     private String observacoes;
+
+    @Column(name = "taxa_entrega", nullable = false)
+    private BigDecimal taxaEntrega;
 
     @PrePersist
     public void prePersist() {
@@ -72,18 +77,8 @@ public class Pedido {
         if (this.statusPedido == null) {
             this.statusPedido = StatusPedido.PENDENTE;
         }
-        calcularValorTotal();
-    }
-
-    public void calcularValorTotal() {
-        if (itens == null || itens.isEmpty()) {
-            this.valorTotal = BigDecimal.ZERO;
-        } else {
-            this.valorTotal = itens.stream()
-                    .map(ItemPedido::getSubtotal)
-                    .filter(v -> v != null)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add)
-                    .setScale(2, RoundingMode.HALF_UP);
+        if (this.desconto == null) {
+            this.desconto = BigDecimal.ZERO;
         }
     }
 

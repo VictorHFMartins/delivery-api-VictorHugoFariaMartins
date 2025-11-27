@@ -1,6 +1,7 @@
 package com.deliverytech.delivery.domain.services.imp;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
@@ -9,15 +10,18 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.deliverytech.delivery.api.dto.RestauranteFreteResponse;
 import com.deliverytech.delivery.api.dto.RestauranteRequest;
 import com.deliverytech.delivery.api.dto.RestauranteResponse;
 import com.deliverytech.delivery.api.exceptions.BusinessException;
 import com.deliverytech.delivery.api.exceptions.EntityNotFoundException;
 import com.deliverytech.delivery.domain.enums.CategoriaRestaurante;
+import com.deliverytech.delivery.domain.model.Cliente;
 import com.deliverytech.delivery.domain.model.Restaurante;
 import com.deliverytech.delivery.domain.model.Telefone;
 import com.deliverytech.delivery.domain.repository.RestauranteRepository;
 import com.deliverytech.delivery.domain.services.RestauranteService;
+import com.deliverytech.delivery.domain.utils.CalcularFrete;
 import com.deliverytech.delivery.domain.validator.EnderecoValidator;
 import com.deliverytech.delivery.domain.validator.TelefoneValidator;
 import com.deliverytech.delivery.domain.validator.UsuarioValidator;
@@ -32,6 +36,8 @@ public class RestauranteServiceImp implements RestauranteService {
     private final RestauranteRepository restauranteRepository;
 
     private final UsuarioValidator usuarioValidator;
+    private final CalcularFrete frete;
+
     private final EnderecoValidator enderecoValidator;
     private final TelefoneValidator telefoneValidator;
 
@@ -53,7 +59,6 @@ public class RestauranteServiceImp implements RestauranteService {
         restaurante.setEstado(dto.estado());
         restaurante.setHorarioAbertura(dto.horarioAbertura());
         restaurante.setHorarioFechamento(dto.horarioFechamento());
-        restaurante.setTaxaEntrega(dto.taxaEntrega());
 
         var telefones = dto.telefones().stream()
                 .map(t -> {
@@ -109,9 +114,6 @@ public class RestauranteServiceImp implements RestauranteService {
         if (dto.horarioFechamento() == null) {
             throw new BusinessException("Horario de fechamento não pode ser vazio");
         }
-        if (dto.taxaEntrega() == null) {
-            throw new BusinessException("taxaEntrega é obrigatória");
-        }
 
         restauranteExistente.setNome(dto.nome());
         restauranteExistente.setEmail(dto.email());
@@ -145,7 +147,6 @@ public class RestauranteServiceImp implements RestauranteService {
         restauranteExistente.setEstado(dto.estado());
         restauranteExistente.setHorarioAbertura(dto.horarioAbertura());
         restauranteExistente.setHorarioFechamento(dto.horarioFechamento());
-        restauranteExistente.setTaxaEntrega(dto.taxaEntrega());
 
         restauranteRepository.save(restauranteExistente);
 
@@ -203,11 +204,15 @@ public class RestauranteServiceImp implements RestauranteService {
     }
 
     @Override
+    public BigDecimal totalDeVendasPorRestaurante(Long restauranteId) {
+        return restauranteRepository.totalVendasPorRestaurante(restauranteId);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<RestauranteResponse> buscarPorFiltro(
             String email,
             String numeroTelefone,
-            BigDecimal taxaEntrega,
             String nome,
             LocalTime horarioAbertura,
             LocalTime horarioFechamento,
@@ -231,13 +236,6 @@ public class RestauranteServiceImp implements RestauranteService {
                     .toList();
         } else {
             System.out.println("numeroTelefone não encontrado para numero: " + numeroTelefone);
-        }
-        if (taxaEntrega != null) {
-            restaurantes = restaurantes.stream()
-                    .filter(r -> r.getTaxaEntrega().compareTo(taxaEntrega) <= 0)
-                    .toList();
-        } else {
-            System.out.println("taxaEntrega não encontrado para taxa: " + taxaEntrega);
         }
         if (nome != null && !nome.isBlank()) {
             restaurantes = restaurantes.stream()
@@ -274,10 +272,50 @@ public class RestauranteServiceImp implements RestauranteService {
                 .toList();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<RestauranteFreteResponse> listarComFreteOrdenado(Long clienteId) {
+
+        // validar cliente existe
+        Cliente cliente = usuarioValidator.validarCliente(clienteId);
+
+        Double latCliente = cliente.getEndereco().getLatitude();
+        Double lonCliente = cliente.getEndereco().getLongitude();
+
+        List<Restaurante> restaurantes = restauranteRepository.findAll();
+
+        return restaurantes.stream()
+                .map(rest -> {
+                    BigDecimal distancia = frete.calcularDistanciaKm(
+                            latCliente, lonCliente,
+                            rest.getEndereco().getLatitude(),
+                            rest.getEndereco().getLongitude()
+                    ).setScale(3, RoundingMode.HALF_UP);
+
+                    BigDecimal taxaEntrega = frete.calcularTaxa(
+                            rest.getEndereco().getLatitude(),
+                            rest.getEndereco().getLongitude(),
+                            latCliente,
+                            lonCliente
+                    ).setScale(2, RoundingMode.HALF_UP);
+
+                    return new RestauranteFreteResponse(
+                            rest.getId(),
+                            rest.getNome(),
+                            rest.getCategoria().name(),
+                            distancia,
+                            taxaEntrega
+                    );
+                })
+                .sorted((a, b) -> a.distanciaKm().compareTo(b.distanciaKm()))
+                .toList();
+    }
+
     public void setCnpj(Restaurante restaurante, String cnpj) {
         if (cnpj != null) {
             cnpj = cnpj.replaceAll("[^0-9]", "");
             restaurante.setCnpj(cnpj);
         }
     }
+
 }

@@ -250,22 +250,6 @@ public class PedidoController {
     }
 
     @Operation(
-            summary = "Total de vendas por restaurante",
-            description = "Retorna o valor total vendido por um restaurante."
-    )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Valor retornado"),
-        @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
-    })
-    @GetMapping("/total/restaurante/{restauranteId}")
-    public ResponseEntity<BigDecimal> totalDeVendasPorRestaurante(
-            @Parameter(description = "ID do restaurante", example = "4")
-            @PathVariable Long restauranteId) {
-
-        return ResponseEntity.ok(pedidoService.totalDeVendasPorRestaurante(restauranteId));
-    }
-
-    @Operation(
             summary = "Listar pedidos por restaurante",
             description = "Retorna todos os pedidos enviados para um restaurante."
     )

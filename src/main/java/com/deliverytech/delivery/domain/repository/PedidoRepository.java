@@ -19,16 +19,11 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
     List<Pedido> findByRestauranteId(Long restauranteId);
 
+    List<Pedido> findByStatusPedido(StatusPedido status);
+
     List<Pedido> findTop10ByOrderByDataPedidoDesc();
 
     List<Pedido> findByDataPedidoBetween(LocalDateTime inicio, LocalDateTime fim);
-
-    @Query("""
-        SELECT SUM(p.valorTotal)
-        FROM Pedido p
-        WHERE p.restaurante.id = :restauranteId
-    """)
-    BigDecimal totalVendasPorRestaurante(@Param("restauranteId") Long restauranteId);
 
     @Query("""
         SELECT p

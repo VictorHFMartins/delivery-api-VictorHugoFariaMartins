@@ -8,30 +8,25 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "ItemPedidoResponse", description = "Retorno dos itens do pedido.")
 public record ItemPedidoResponse(
-
         @Schema(description = "ID do item", example = "55")
         Long id,
-
+        
         @Schema(description = "Produto")
-        ProdutoResponse produto,
-
-        @Schema(description = "Quantidade", example = "3")
-        Long quantidade,
-
+        String nome,
+        
         @Schema(description = "Preço unitário", example = "19.90")
         BigDecimal precoUnitario,
-
-        @Schema(description = "Subtotal do item", example = "59.70")
-        BigDecimal subtotal
-) {
+        
+        @Schema(description = "Quantidade", example = "3")
+        Long quantidade
+        ) {
 
     public static ItemPedidoResponse of(ItemPedido i) {
         return new ItemPedidoResponse(
                 i.getId(),
-                ProdutoResponse.of(i.getProduto()),
-                i.getQuantidade(),
+                i.getProduto().getNome(),
                 i.getPrecoUnitario(),
-                i.getSubtotal()
+                i.getQuantidade()
         );
     }
 }

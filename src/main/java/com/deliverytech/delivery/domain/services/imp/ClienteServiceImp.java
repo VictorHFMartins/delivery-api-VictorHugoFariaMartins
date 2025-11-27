@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.deliverytech.delivery.api.dto.ClienteRankingResponse;
 import com.deliverytech.delivery.api.dto.ClienteRequest;
 import com.deliverytech.delivery.api.dto.ClienteResponse;
 import com.deliverytech.delivery.api.exceptions.BusinessException;
@@ -162,6 +163,12 @@ public class ClienteServiceImp implements ClienteService {
         return clientes.stream()
                 .map(ClienteResponse::of)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ClienteRankingResponse> rankingClientes() {
+        return clienteRepository.findRankingClientes();
     }
 
     @Override

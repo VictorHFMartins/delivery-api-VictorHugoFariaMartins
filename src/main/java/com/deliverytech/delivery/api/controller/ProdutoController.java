@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.deliverytech.delivery.api.dto.FaturamentoCategoriaResponse;
+import com.deliverytech.delivery.api.dto.ItemPedidoResponse;
 import com.deliverytech.delivery.api.dto.ProdutoRequest;
 import com.deliverytech.delivery.api.dto.ProdutoResponse;
 import com.deliverytech.delivery.domain.enums.CategoriaProduto;
@@ -158,6 +160,16 @@ public class ProdutoController {
     }
 
     @Operation(
+            summary = "Listar Faturamento de produtos por categoria",
+            description = "Retorna lista com o faturamento de produtos por categoria."
+    )
+    @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
+    @GetMapping("/faturamento-categorias")
+    public List<FaturamentoCategoriaResponse> faturamentoCategorias() {
+        return produtoService.faturamentoPorCategoria();
+    }
+
+    @Operation(
             summary = "Buscar produtos por filtros",
             description = "Filtra produtos por nome, quantidade, preço e categoria."
     )
@@ -193,5 +205,18 @@ public class ProdutoController {
             @PathVariable Long restauranteId) {
 
         return ResponseEntity.ok(produtoService.buscarProdutosPorRestaurante(restauranteId));
+    }
+
+    @Operation(
+            summary = "Listar produtos mais vendidos",
+            description = "Retorna lista ordenada por produtos mais vendidos."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
+    })
+    @GetMapping("/ranking/mais-vendidos")
+    public ResponseEntity<List<ItemPedidoResponse>> buscarMaisVendidos() {
+
+        return ResponseEntity.ok(produtoService.listarMaisVendidos());
     }
 }

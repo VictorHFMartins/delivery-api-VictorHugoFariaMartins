@@ -9,12 +9,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.deliverytech.delivery.api.dto.FaturamentoCategoriaResponse;
+import com.deliverytech.delivery.api.dto.ItemPedidoResponse;
 import com.deliverytech.delivery.api.dto.ProdutoRequest;
 import com.deliverytech.delivery.api.dto.ProdutoResponse;
 import com.deliverytech.delivery.api.exceptions.BusinessException;
 import com.deliverytech.delivery.domain.enums.CategoriaProduto;
 import com.deliverytech.delivery.domain.model.Produto;
 import com.deliverytech.delivery.domain.model.Restaurante;
+import com.deliverytech.delivery.domain.repository.ItemPedidoRepository;
 import com.deliverytech.delivery.domain.repository.ProdutoRepository;
 import com.deliverytech.delivery.domain.services.ProdutoService;
 import com.deliverytech.delivery.domain.validator.UsuarioValidator;
@@ -28,7 +31,10 @@ import lombok.AllArgsConstructor;
 public class ProdutoServiceImp implements ProdutoService {
 
     private final ProdutoRepository produtoRepository;
+    private final ItemPedidoRepository itemPedidoRepository;
+
     private final UsuarioValidator usuarioValidator;
+
     private final ModelMapper modelMapper;
 
     private Produto buscarOuCriar(Long restauranteId, ProdutoRequest dto) {
@@ -134,6 +140,11 @@ public class ProdutoServiceImp implements ProdutoService {
     }
 
     @Override
+    public List<ItemPedidoResponse> listarMaisVendidos() {
+        return itemPedidoRepository.findRankingProdutosMaisVendidos();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<ProdutoResponse> buscarPorFiltro(
             String nome,
@@ -182,6 +193,11 @@ public class ProdutoServiceImp implements ProdutoService {
         return produtos.stream()
                 .map(ProdutoResponse::of)
                 .toList();
+    }
+
+    @Override
+    public List<FaturamentoCategoriaResponse> faturamentoPorCategoria() {
+        return produtoRepository.faturamentoPorCategoria();
     }
 
 }

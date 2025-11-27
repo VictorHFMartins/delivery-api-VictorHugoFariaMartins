@@ -42,9 +42,9 @@ public class UsuarioValidator {
 
     public Administrador validarAdministrador(Long id) {
 
-        Usuario usuario = validarUsuario(id);
+        Administrador adm = (Administrador) validarUsuario(id);
 
-        if (usuario.getTipoUsuario() != TipoUsuario.ADMINISTRADOR) {
+        if (adm.getTipoUsuario() != TipoUsuario.ADMINISTRADOR) {
             throw new EntityNotFoundException(
                     "O id " + id + " não pertence a um Administrador."
             );
@@ -58,9 +58,9 @@ public class UsuarioValidator {
 
     public Cliente validarCliente(Long id) {
 
-        Usuario usuario = validarUsuario(id);
+        Cliente cliente = (Cliente) validarUsuario(id);
 
-        if (usuario.getTipoUsuario() != TipoUsuario.CLIENTE) {
+        if (cliente.getTipoUsuario() != TipoUsuario.CLIENTE) {
             throw new EntityNotFoundException(
                     "O id " + id + " não pertence a um Cliente."
             );
@@ -74,9 +74,9 @@ public class UsuarioValidator {
 
     public Restaurante validarRestaurante(Long id) {
 
-        Usuario usuario = validarUsuario(id);
+        Restaurante restaurante = (Restaurante) validarUsuario(id);
 
-        if (usuario.getTipoUsuario() != TipoUsuario.RESTAURANTE) {
+        if (restaurante.getTipoUsuario() != TipoUsuario.RESTAURANTE) {
             throw new EntityNotFoundException(
                     "O id " + id + " não pertence a um Restaurante."
             );
@@ -87,5 +87,4 @@ public class UsuarioValidator {
                 "Restaurante não encontrado para o id: " + id
         ));
     }
-
 }

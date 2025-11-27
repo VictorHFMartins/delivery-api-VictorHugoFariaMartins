@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.deliverytech.delivery.domain.enums.CategoriaRestaurante;
@@ -36,9 +38,6 @@ public interface RestauranteRepository extends JpaRepository<Restaurante, Long> 
     // Busca por horário de fechamento
     List<Restaurante> findByHorarioFechamento(LocalTime horaFechamento);
 
-    // Por taxa de entrega menor ou igual
-    List<Restaurante> findByTaxaEntregaLessThanEqual(BigDecimal taxa);
-
     // busca clientes por numero;
     List<Restaurante> findByTelefonesNumeroContaining(String numero);
 
@@ -46,5 +45,12 @@ public interface RestauranteRepository extends JpaRepository<Restaurante, Long> 
     List<Restaurante> findTop5ByOrderByNotaAvaliacaoDescNomeAsc();
 
     boolean existsByEmail(String email);
+
+    @Query("""
+        SELECT SUM(p.valorTotal)
+        FROM Pedido p
+        WHERE p.restaurante.id = :restauranteId
+    """)
+    BigDecimal totalVendasPorRestaurante(@Param("restauranteId") Long restauranteId);
 
 }

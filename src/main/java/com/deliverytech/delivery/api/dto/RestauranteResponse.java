@@ -33,8 +33,6 @@ public record RestauranteResponse(
         LocalTime horarioAbertura,
         @Schema(description = "Horário de fechamento", example = "23:00")
         LocalTime horarioFechamento,
-        @Schema(description = "Taxa de entrega", example = "R$ 5.00")
-        String taxaEntrega,
         @Schema(description = "Média geral das avaliações do restaurante", example = "4.7")
         Double nota
         ) {
@@ -80,7 +78,6 @@ public record RestauranteResponse(
                 r.getEstado(),
                 r.getHorarioAbertura(),
                 r.getHorarioFechamento(),
-                "R$ " + r.getTaxaEntrega(),
                 r.getNotaAvaliacao());
     }
 }

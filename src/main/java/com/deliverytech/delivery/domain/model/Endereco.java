@@ -70,12 +70,10 @@ public class Endereco {
     @JsonIgnore
     private List<Usuario> usuario;
 
-    @Transient
     @DecimalMin(value = "-90.0")
     @DecimalMax(value = "90.0")
     private Double latitude;
 
-    @Transient
     @DecimalMin(value = "-180.0")
     @DecimalMax(value = "180.0")
     private Double longitude;

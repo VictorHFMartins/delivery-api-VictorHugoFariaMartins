@@ -93,7 +93,6 @@ CREATE TABLE restaurantes (
     categoria VARCHAR(50),
     horario_abertura TIME,
     horario_fechamento TIME,
-    taxa_entrega DECIMAL(10, 2),
     estado VARCHAR(20),
     tipo_usuario ENUM('CLIENTE','RESTAURANTE') DEFAULT 'RESTAURANTE',
     CONSTRAINT fk_restaurante_usuario FOREIGN KEY (id)
@@ -144,6 +143,7 @@ CREATE TABLE pedidos (
     status_pedido ENUM('PENDENTE','CONFIRMADO','DESPACHADO','ENTREGUE','CANCELADO')
         NOT NULL DEFAULT 'PENDENTE',
     valor_total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    taxa_entrega DECIMAL(10, 2)NOT NULL DEFAULT 0.00,
     observacoes VARCHAR(255),
 
     CONSTRAINT fk_pedido_cliente FOREIGN KEY (cliente_id)

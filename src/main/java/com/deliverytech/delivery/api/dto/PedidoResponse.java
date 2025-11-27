@@ -18,10 +18,10 @@ public record PedidoResponse(
         List<ItemPedidoResponse> itens,
 
         @Schema(description = "Dados do cliente")
-        ClienteResponse cliente,
+        String clienteNome,
 
         @Schema(description = "Dados do restaurante")
-        RestauranteResponse restaurante,
+        String restauranteNome,
 
         @Schema(description = "Status do pedido", example = "PENDENTE")
         StatusPedido statusPedido,
@@ -41,8 +41,8 @@ public record PedidoResponse(
         return new PedidoResponse(
                 p.getId(),
                 itens,
-                ClienteResponse.of(p.getCliente()),
-                RestauranteResponse.of(p.getRestaurante()),
+                p.getCliente().getNome(),
+                p.getRestaurante().getNome(),
                 p.getStatusPedido(),
                 p.getValorTotal(),
                 p.getObservacoes()

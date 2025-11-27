@@ -1,6 +1,5 @@
 package com.deliverytech.delivery.domain.model;
 
-import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -48,9 +47,6 @@ public class Restaurante extends Usuario {
 
     @Column(nullable = true)
     private LocalTime horarioFechamento;
-
-    @Column(name = "taxa_entrega", nullable = false)
-    private BigDecimal taxaEntrega;
 
     @AssertTrue(message = "Horário de abertura deve ser antes do fechamento")
     public boolean isHorarioValido() {

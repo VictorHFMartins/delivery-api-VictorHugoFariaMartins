@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.deliverytech.delivery.api.dto.RestauranteFreteResponse;
 import com.deliverytech.delivery.api.dto.RestauranteRequest;
 import com.deliverytech.delivery.api.dto.RestauranteResponse;
 import com.deliverytech.delivery.domain.enums.CategoriaRestaurante;
@@ -78,8 +79,7 @@ public class RestauranteController {
                               "classe": "BRASILEIRO",
                               "estado": "ABERTO",
                               "horarioAbertura": "09:00",
-                              "horarioFechamento": "23:00",
-                              "taxaEntrega": 6.50
+                              "horarioFechamento": "23:00"
                             }
                             """)
                     )
@@ -198,8 +198,40 @@ public class RestauranteController {
     }
 
     @Operation(
+            summary = "Total de vendas por restaurante",
+            description = "Retorna o valor total vendido por um restaurante."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Valor retornado"),
+        @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
+    })
+    @GetMapping("/{restauranteId}/total")
+    public ResponseEntity<BigDecimal> totalDeVendasPorRestaurante(
+            @Parameter(description = "ID do restaurante", example = "4")
+            @PathVariable Long restauranteId) {
+
+        return ResponseEntity.ok(restauranteService.totalDeVendasPorRestaurante(restauranteId));
+    }
+
+    @Operation(
+            summary = "Listar restaurantes por frete para cliente",
+            description = "Permite filtrar os restaurante ordenanos por frete para o cliente."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Valor retornado"),
+        @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+    })
+    @GetMapping("/cliente/{clienteId}/com-frete")
+    public ResponseEntity<List<RestauranteFreteResponse>> listarPorFrete(
+            @Schema(description = "ID do cliente", example = "8")
+            @PathVariable Long clienteId) {
+        List<RestauranteFreteResponse> lista = restauranteService.listarComFreteOrdenado(clienteId);
+        return ResponseEntity.ok(lista);
+    }
+
+    @Operation(
             summary = "Pesquisar restaurantes por filtros",
-            description = "Permite filtrar por nome, email, taxa de entrega, telefone, horários e categoria."
+            description = "Permite filtrar por nome, email, telefone, horários e categoria."
     )
     @ApiResponse(responseCode = "200", description = "Busca concluída")
     @GetMapping("/buscar")
@@ -208,8 +240,6 @@ public class RestauranteController {
             @RequestParam(required = false) String email,
             @Parameter(description = "Telefone (apenas números)", example = "11988776655")
             @RequestParam(required = false) String numeroTelefone,
-            @Parameter(description = "Taxa de entrega máxima", example = "5.00")
-            @RequestParam(required = false) BigDecimal taxaEntrega,
             @Parameter(description = "Nome do restaurante", example = "Sabor")
             @RequestParam(required = false) String nome,
             @Parameter(description = "Horário mínimo de abertura", example = "09:00")
@@ -221,7 +251,7 @@ public class RestauranteController {
     ) {
         return ResponseEntity.ok(
                 restauranteService.buscarPorFiltro(
-                        email, numeroTelefone, taxaEntrega, nome,
+                        email, numeroTelefone, nome,
                         horarioAbertura, horarioFechamento, categoria
                 )
         );
