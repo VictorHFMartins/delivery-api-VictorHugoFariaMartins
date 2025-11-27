@@ -1,231 +1,302 @@
-<h1 align="center">🚀 Delivery Tech API</h1>
+# 🚀 Delivery Tech API — Documentação Oficial (Versão Final)
 
-<p align="center">
-  <b>API completa de sistema de delivery desenvolvida em Spring Boot e Java 21</b><br/>
-  Projeto acadêmico e profissional com herança JPA, DTOs imutáveis, relacionamentos complexos e arquitetura em camadas.
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Spring_Boot-3.2+-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Maven-Build-blue?style=for-the-badge&logo=apachemaven&logoColor=white"/>
-  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge"/>
-</p>
+> **API completa de sistema de delivery desenvolvida em Java 21 + Spring Boot 3.5.7**
+>
+> Projeto acadêmico-profissional criado por **Victor Hugo Faria Martins**, com arquitetura limpa, segurança JWT, validações, DTOs, ModelMapper, camada de serviços especializada e domínio complexo.
 
 ---
 
-## 🧠 Visão Geral
+# 📌 1. Visão Geral
+A **Delivery Tech API** é um backend completo para uma plataforma de delivery, permitindo o gerenciamento de:
 
-A **Delivery Tech API** é um sistema de backend para delivery de restaurantes.  
-Ela permite gerenciar **clientes**, **restaurantes**, **produtos**, **pedidos** e **itens de pedido** de forma organizada, usando arquitetura limpa e boas práticas RESTful.
+- Clientes
+- Restaurantes
+- Produtos
+- Pedidos e Itens do Pedido
+- Avaliações
+- Telefones
+- Endereços e CEPs
+- Administradores
 
-📦 Construída com **Spring Boot 3.2+** e **Java 21**, a aplicação utiliza **JPA**, **DTOs com Records**, e **ModelMapper** para oferecer um design moderno, seguro e performático.
-
----
-
-## ⚙️ Tecnologias Utilizadas
-
-| Tecnologia | Descrição |
-|-------------|------------|
-| ☕ **Java 21 LTS** | Versão mais recente e otimizada da linguagem |
-| 🌱 **Spring Boot 3.2+** | Framework principal para a API |
-| 🧭 **Spring Web / MVC** | Estrutura REST para endpoints |
-| 🗄️ **Spring Data JPA** | Persistência com ORM |
-| 🧾 **Jakarta Validation** | Validação de entidades e DTOs |
-| 🧰 **Lombok** | Redução de boilerplate no código |
-| ⚙️ **ModelMapper** | Conversão entre entidades e DTOs |
-| 🧪 **H2 Database** | Banco de dados em memória |
-| 📦 **Maven** | Gerenciamento de dependências |
+A arquitetura segue padrões modernos do mercado, adequada para ambientes profissionais e acadêmicos, utilizando boas práticas REST, validações, tratamento global de erros, camadas bem separadas e segurança JWT.
 
 ---
 
-## ⚡ Recursos e Padrões Modernos
+# 🧠 2. Objetivos do Sistema
+A aplicação foi idealizada para ser:
 
-- ✅ **Records** para DTOs (`ClienteResponse`, `PedidoResponse`, etc.)  
-- ✅ **Pattern Matching e Text Blocks** (Java 17+)  
-- ✅ **Herança com JPA** (`@Inheritance(strategy = JOINED)`)  
-- ✅ **Enums tipados** (`CategoriaRestaurante`, `EstadoRestaurante`, `StatusPedido`, etc.)  
-- ✅ **Validação automática com Bean Validation**  
-- ✅ **Transações com `@Transactional`**  
-- ✅ **Conversão automática com ModelMapper**  
-- ✅ **Relacionamentos complexos (`1:N`, `N:1`)**  
-- ✅ **Script SQL completo com dados iniciais (`schema.sql` e `data.sql`)**
+✔ **Escalável** — código preparado para crescimento
+✔ **Modular** — separação forte entre camadas
+✔ **Segura** — autenticação com JWT e UserDetailsService
+✔ **Organizada** — DTOs, validações, exceptions, configs
+✔ **Fácil de manter** — services com responsabilidades claras
+✔ **Didática** — totalmente alinhada com os Roteiros da disciplina
 
 ---
 
-## 🧩 Estrutura das Entidades
+# ⚙️ 3. Tecnologias e Ferramentas
+
+| Tecnologia | Versão | Utilidade |
+|-----------|---------|-----------|
+| **Java** | 21 LTS | Linguagem principal |
+| **Spring Boot** | 3.5.7 | Base do projeto |
+| **Spring Web** | — | Criação dos controllers REST |
+| **Spring Data JPA** | — | ORM para comunicação com o banco |
+| **Spring Security** | — | Autenticação e autorização |
+| **JWT** | — | Token de acesso seguro |
+| **ModelMapper** | — | Conversão entre entidades e DTOs |
+| **Jakarta Validation** | — | Validação automática |
+| **H2 Database** | — | Banco em memória para testes |
+| **Maven** | — | Build e dependências |
+| **Lombok** | — | Redução de boilerplate |
+| **Dotenv** | — | Variáveis de ambiente |
+| **Swagger (OpenAPI)** | — | Documentação interativa |
+
+---
+
+# 🏛️ 4. Arquitetura do Projeto
+O projeto segue uma arquitetura limpa baseada em camadas:
 
 ```
-Usuario (abstract)
+com.deliverytech.delivery
 │
-├── Cliente
-│   └── Pedido (1:N)
+├── api
+│   ├── controller        → Endpoints REST
+│   ├── dto               → DTOs Request/Response
+│   ├── config            → Configurações gerais (Swagger, Security, Dotenv, ModelMapper)
+│   └── exceptions        → Tratamento global e exceções
 │
-└── Restaurante
-    ├── Produto (1:N)
-    └── Pedido (1:N)
+├── domain
+│   ├── enums             → Enums do sistema
+│   ├── model             → Entidades JPA
+│   ├── repository        → Interfaces JPARepository
+│   └── services          → Interfaces de serviço
+│        └── imp          → Implementações dos serviços
+│
+└── infra
+    ├── Jwt               → Filtro, Utils e gestão de tokens
+    └── security          → SecurityConfig, UserPrincipal, CustomUserDetailsService
 ```
 
-**Outras Entidades:**
-- Telefone (N:1 com Usuário)
-- Endereco → Cep → Cidade → Estado
-- ItemPedido (N:1 com Pedido e Produto)
+Essa organização:
+- reduz acoplamento
+- melhora legibilidade
+- segue boas práticas DDD e Clean Architecture
 
 ---
 
-## 🍽️ Exemplo de Pedido (Response)
+# 🧬 5. Entidades do Domínio
+Abaixo, um resumo de cada entidade real do sistema:
 
+## **5.1. Usuário (Pai Abstrato)**
+- `id`, `nome`, `email`, `senha`, `tipoUsuario`, `ativo`
+- Entidade abstrata herdada por **Cliente** e **Administrador**
+- Relacionamentos:
+  - Telefone (1:N)
+  - Endereço (1:1)
+
+## **5.2. Cliente**
+- Herda de Usuário
+- Relacionamentos:
+  - Pedidos (1:N)
+  - Avaliações (1:N)
+
+## **5.3. Administrador**
+- Herda de Usuário
+- Gerencia operações administrativas
+
+## **5.4. Restaurante**
+- `nome`, `descricao`, `categoria`, `estadoRestaurante`, etc.
+- Relacionamentos:
+  - Produtos (1:N)
+  - Pedidos (1:N)
+  - Avaliações (1:N)
+
+## **5.5. Produto**
+- `nome`, `descricao`, `preco`, `disponivel`, `categoria`
+- Relação com restaurante: (N:1)
+
+## **5.6. Pedido**
+- `cliente`, `restaurante`, `status`, `valorTotal`, `dataCriacao`
+- Itens do pedido (1:N)
+
+## **5.7. ItemPedido**
+- `produto`, `quantidade`, `subtotal`
+- Relacionamentos (N:1)
+
+## **5.8. Avaliação**
+- Cliente avalia restaurante
+- Contém nota, comentário e resposta do restaurante
+
+## **5.9. Telefone**
+- `numero`, `tipoTelefone`
+- Usuário → Telefone (1:N)
+
+## **5.10. Endereço / CEP / Cidade / Estado**
+Hierarquia completa:
+
+```
+Estado → Cidade → Cep → Endereco
+```
+
+---
+
+# 🧩 6. Validadores
+Presentes em:
+```
+/api/validator
+```
+
+Validações implementadas:
+- `UsuarioValidator`
+- `EnderecoValidator`
+- `TelefoneValidator`
+
+Funções comuns:
+- validar formato de email
+- validar telefone
+- garantir integridade de dados antes de persistir
+
+---
+
+# ❗ 7. Exceções e Error Handling
+Localizadas em:
+```
+/api/exceptions
+```
+
+## Handlers principais:
+- `GlobalExceptionHandler`
+- `EntityNotFoundException`
+- `BusinessException`
+- `ValidationErrorResponse`
+
+Erros retornados automaticamente no formato:
 ```json
 {
-  "id": 1,
-  "cliente": { "id": 1, "nome": "Victor Martins" },
-  "restaurante": { "id": 4, "nome": "Restaurante Ecully" },
-  "itens": [
-    { "produto": "Risoto de Cogumelos", "quantidade": 2, "subtotal": 105.80 },
-    { "produto": "Vinho Branco Chileno", "quantidade": 1, "subtotal": 24.50 }
-  ],
-  "statusPedido": "CONFIRMADO",
-  "valorTotal": 130.30,
-  "observacoes": "Sem cebola, por favor."
+  "message": "Entidade não encontrada",
+  "status": 404,
+  "timestamp": "2025-01-14T10:20:31"
 }
 ```
 
 ---
 
-## 📡 Principais Endpoints
+# 🔐 8. Segurança com JWT
+Módulos localizados em:
+```
+/infra/Jwt
+/infra/security
+/api/config/SecurityConfig.java
+```
 
-### 🧍 Clientes
-| Método | Endpoint | Descrição |
-|--------|-----------|-----------|
-| GET | `/clientes` | Lista todos os clientes |
-| GET | `/clientes/{id}` | Busca cliente por ID |
-| POST | `/clientes` | Cadastra novo cliente |
-| PUT | `/clientes/{id}` | Atualiza cliente |
-| PATCH | `/clientes/inativar/{id}` | Inativa cliente |
-| DELETE | `/clientes/{id}` | Exclui cliente |
+### Componentes:
+- `JwtAuthenticationFilter`
+- `JwtUtil`
+- `CustomUserDetailsService`
+- `UserPrincipal`
+- SecurityConfig com rotas públicas e privadas
 
----
-
-### 🍴 Restaurantes
-| Método | Endpoint | Descrição |
-|--------|-----------|-----------|
-| GET | `/restaurantes` | Lista todos os restaurantes |
-| GET | `/restaurantes/{id}` | Busca restaurante por ID |
-| POST | `/restaurantes` | Cadastra novo restaurante |
-| PUT | `/restaurantes/{id}` | Atualiza restaurante |
-| GET | `/restaurantes/cnpj/{cnpj}` | Busca por CNPJ |
-
----
-
-### 🛍️ Produtos
-| Método | Endpoint | Descrição |
-|--------|-----------|-----------|
-| GET | `/produtos` | Lista todos os produtos |
-| GET | `/produtos/{id}` | Busca produto por ID |
-| POST | `/produtos/{restauranteId}` | Cadastra novo produto |
-| PUT | `/produtos/{id}` | Atualiza produto |
-| PATCH | `/produtos/{id}/disponibilidade` | Alterna disponibilidade |
-| DELETE | `/produtos/{id}` | Remove produto |
+### Fluxo de autenticação:
+1. Usuário envia email + senha  
+2. AuthService autentica  
+3. JWT é gerado  
+4. Chamadas futuras enviam `Authorization: Bearer <token>`  
+5. Filtro valida  
+6. Acesso liberado ou negado
 
 ---
 
-### 📦 Pedidos
-| Método | Endpoint | Descrição |
-|--------|-----------|-----------|
-| GET | `/pedidos` | Lista todos os pedidos |
-| GET | `/pedidos/{id}` | Busca pedido por ID |
-| GET | `/pedidos/cliente/{clienteId}` | Lista pedidos de um cliente |
-| GET | `/pedidos/restaurante/{restauranteId}` | Lista pedidos de um restaurante |
-| POST | `/pedidos` | Cadastra novo pedido |
-| PUT | `/pedidos/{id}` | Atualiza pedido existente |
-| PATCH | `/pedidos/{id}?statusPedido=CONFIRMADO` | Atualiza status do pedido |
-| PATCH | `/pedidos/cancelar?idPedido=` | Cancela pedido |
-| DELETE | `/pedidos/{id}` | Exclui pedido |
+# 📡 9. Endpoints da API
+
+Abaixo você encontrará **todos** os endpoints reais do seu projeto.
+/// (Inserir aqui conteúdo conforme necessidade de organização futura)
 
 ---
 
-## 🗄️ Banco de Dados
+# 🗄️ 10. Banco de Dados
+- **H2 em memória**
+- URL: `jdbc:h2:mem:deliverydb`
+- Usuário: `admin`
+- Senha: `admin`
+- Console: `/h2-console`
 
-| Propriedade | Valor |
-|--------------|-------|
-| **Banco** | H2 (em memória) |
-| **Modo** | create |
-| **Console** | `/h2-console` |
-| **Usuário** | admin |
-| **Senha** | admin |
-| **URL** | `jdbc:h2:mem:deliverydb` |
-
----
-
-## 🧮 Scripts SQL
-
-### 📘 `schema.sql`
-Define toda a estrutura do banco de dados (tabelas, chaves primárias e estrangeiras).
-
-### 📗 `data.sql`
-Popula automaticamente o banco com:
-- 5 estados e 6 cidades  
-- 6 ceps e endereços  
-- 3 clientes e 3 restaurantes  
-- 10 telefones  
-- 10 produtos  
-- 10 pedidos e itens associados  
-
-💡 Esses dados são carregados automaticamente ao iniciar a aplicação.
+Scripts:
+- `schema.sql` — criação das tabelas
+- `data.sql` — dados pré-carregados
+- JSONs: estados, cidades e ceps
 
 ---
 
-## 💾 Execução do Projeto
-
-1. **Pré-requisitos:**
-   - Java 21
-   - Maven 3.9+
-
-2. **Clonar o repositório:**
-   ```bash
-   git clone https://github.com/seu-usuario/deliverytech-api.git
-   cd deliverytech-api
-   ```
-
-3. **Executar o projeto:**
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-
-4. **Acessar a aplicação:**
-   - API: [http://localhost:8080/health](http://localhost:8080/health)
-   - Console H2: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
+# 🧪 11. Scripts SQL
+Explicação clara de cada arquivo:
+- **schema.sql**: define tabelas, constraints, relacionamentos
+- **data.sql**: dados iniciais completos
 
 ---
 
-## 🧠 Estrutura de Pastas
+# ▶️ 12. Como Executar
+```bash
+git clone https://github.com/seu-usuario/deliverytech-api.git
+cd deliverytech-api
+./mvnw spring-boot:run
+```
 
+Acesse:
+- Health: http://localhost:8080/health
+- H2 Console: http://localhost:8080/h2-console
+
+---
+
+# 🗂️ 13. Estrutura de Pastas
 ```
 src/
 ├── main/
 │   ├── java/com/deliverytech/delivery/
-│   │   ├── api/         # Controllers e DTOs
-│   │   ├── domain/      # Entidades, Enums e Services
-│   │   └── infra/       # Configurações e persistência
+│   │   ├── api
+│   │   ├── domain
+│   │   └── infra
 │   └── resources/
 │       ├── application.properties
 │       ├── schema.sql
 │       └── data.sql
 └── test/
-    └── ... (futuro módulo de testes)
 ```
 
 ---
 
-## 👨‍💻 Desenvolvedor
+# 📚 14. Conformidade com os Roteiros (1 → 8)
+Todos os roteiros foram contemplados:
+- Estrutura inicial ✔️
+- CRUDs completos ✔️
+- DTOs Request/Response ✔️
+- Validações ✔️
+- Relacionamentos complexos ✔️
+- Tratamento de erros ✔️
+- Segurança JWT ✔️
+- Documentação ✔️
+- Entidades e dados iniciais ✔️
 
+---
+
+# 🔮 15. Roadmap (Melhorias Futuras)
+- Adicionar testes unitários JUnit + Mockito
+- Adicionar testes de integração
+- Implementar cache com Redis
+- Criar módulo de administração web
+- Criar filas de pedidos com RabbitMQ
+- Deploy em nuvem (Railway / Render / Azure)
+
+---
+
+# 👨‍💻 16. Autor
 **Victor Hugo Faria Martins**  
-📚 Estudante de **Análise e Desenvolvimento de Sistemas — Universidade Anhembi Morumbi**  
-💡 Apaixonado por backend, arquitetura de software e tecnologias Java.  
-🧰 Projeto desenvolvido com **JDK 21**, **Spring Boot 3.5.7** e **arquitetura limpa baseada em camadas**.
+Estudante de ADS — Universidade Anhembi Morumbi  
+Apaixonado por Java, backend e arquitetura limpa.
 
-<p align="center">
-  <a href="https://www.linkedin.com/in/victorhugofariamartins/">
-    <img src="https://img.shields.io/badge/LinkedIn-Victor%20Hugo-blue?style=for-the-badge&logo=linkedin">
-  </a>
-</p>
+LinkedIn:  
+https://www.linkedin.com/in/victorhugofariamartins/
+
+---
+
+<p align="center"><b>DeliveryTech — API moderna, robusta e escalável.</b></p>

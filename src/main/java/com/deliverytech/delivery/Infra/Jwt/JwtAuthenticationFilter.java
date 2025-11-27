@@ -1,4 +1,4 @@
-package com.deliverytech.delivery.api.security;
+package com.deliverytech.delivery.Infra.Jwt;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.deliverytech.delivery.domain.services.CustomUserDetailsService;
+import com.deliverytech.delivery.Infra.security.CustomUserDetailsService;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

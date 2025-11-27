@@ -1,10 +1,9 @@
-package com.deliverytech.delivery.domain.services;
+package com.deliverytech.delivery.Infra.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import com.deliverytech.delivery.api.security.UserPrincipal;
 import com.deliverytech.delivery.domain.model.Usuario;
 import com.deliverytech.delivery.domain.repository.UsuarioRepository;
 

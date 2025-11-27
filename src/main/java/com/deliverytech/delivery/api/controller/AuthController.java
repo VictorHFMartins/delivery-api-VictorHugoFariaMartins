@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deliverytech.delivery.api.dto.AuthRequest;
 import com.deliverytech.delivery.api.dto.AuthResponse;
 import com.deliverytech.delivery.api.dto.UsuarioRegisterRequest;
+import com.deliverytech.delivery.domain.services.imp.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

@@ -1,4 +1,4 @@
-package com.deliverytech.delivery.api.controller;
+package com.deliverytech.delivery.domain.services.imp;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -6,12 +6,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.deliverytech.delivery.Infra.Jwt.JwtUtil;
+import com.deliverytech.delivery.Infra.security.UserPrincipal;
 import com.deliverytech.delivery.api.dto.AuthRequest;
 import com.deliverytech.delivery.api.dto.AuthResponse;
 import com.deliverytech.delivery.api.dto.UsuarioRegisterRequest;
 import com.deliverytech.delivery.api.exceptions.BusinessException;
-import com.deliverytech.delivery.api.security.JwtUtil;
-import com.deliverytech.delivery.api.security.UserPrincipal;
 import com.deliverytech.delivery.domain.model.Administrador;
 import com.deliverytech.delivery.domain.model.Cliente;
 import com.deliverytech.delivery.domain.model.Restaurante;

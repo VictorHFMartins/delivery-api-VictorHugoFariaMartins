@@ -1,4 +1,4 @@
-package com.deliverytech.delivery.api.config;
+package com.deliverytech.delivery.Infra.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.deliverytech.delivery.api.security.JwtAuthenticationFilter;
-import com.deliverytech.delivery.domain.services.CustomUserDetailsService;
+import com.deliverytech.delivery.Infra.Jwt.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 
