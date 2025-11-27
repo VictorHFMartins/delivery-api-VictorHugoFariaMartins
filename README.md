@@ -1,4 +1,4 @@
-# 🚀 Delivery Tech API — Documentação Oficial (Versão Final)
+# 🚀 Delivery Tech API — Documentação Oficial
 
 > **API completa de sistema de delivery desenvolvida em Java 21 + Spring Boot 3.5.7**
 >
@@ -210,21 +210,124 @@ Módulos localizados em:
 # 📡 9. Endpoints da API
 
 Abaixo você encontrará **todos** os endpoints reais do seu projeto.
-/// (Inserir aqui conteúdo conforme necessidade de organização futura)
+
+
+|--------|----------|-----------|
+| GET | `/avaliacoes` | Lista todas as avaliações |
+| GET | `/avaliacoes/{id}` | Busca por ID |
+| GET | `/avaliacoes/restaurante/{restauranteId}` | Lista avaliações por restaurante |
+| POST | `/avaliacoes/{clienteId}/{restauranteId}` | Cliente avalia restaurante |
+| POST | `/avaliacoes/resposta/{avaliacaoId}` | Restaurante responde avaliação |
+
 
 ---
+## ☎ Telefones (`/telefones`)
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| GET | `/telefones` | Lista todos |
+| GET | `/telefones/{id}` | Busca por ID |
+| POST | `/telefones/usuario/{usuarioId}` | Cadastra telefone para usuário |
+| PUT | `/telefones/{id}` | Atualiza telefone |
+| DELETE | `/telefones/{id}` | Remove |
+
+
+---
+## 🏠 Endereços (`/enderecos`)
+| Método | Endpoint |
+|--------|----------|
+| GET | `/enderecos` |
+| GET | `/enderecos/{id}` |
+| POST | `/enderecos/usuario/{usuarioId}` |
+| PUT | `/enderecos/{id}` |
+| DELETE | `/enderecos/{id}` |
+
+
+---
+## 🗺️ CEP / Cidade / Estado
+### CEP (`/cep`)
+| GET | `/cep/{cep}` |
+| POST | `/cep` |
+
+
+### Cidades (`/cidade`)
+| GET | `/cidade` |
+| GET | `/cidade/{id}` |
+| POST | `/cidade` |
+
+
+### Estados (`/estado`)
+| GET | `/estado` |
+| GET | `/estado/{id}` |
+| POST | `/estado` |
+
+
+---
+## 🔐 Autenticação (`/auth`)
+| Método | Endpoint |
+|--------|----------|
+| POST | `/auth/register` |
+| POST | `/auth/login` |
+
+
+---
+## 🛠 Administradores (`/administradores`)
+| Método | Endpoint |
+|--------|----------|
+| GET | `/administradores` |
+| GET | `/administradores/{id}` |
+| POST | `/administradores` |
+| PUT | `/administradores/{id}` |
+| DELETE | `/administradores/{id}` |
 
 # 🗄️ 10. Banco de Dados
-- **H2 em memória**
-- URL: `jdbc:h2:mem:deliverydb`
-- Usuário: `admin`
-- Senha: `admin`
-- Console: `/h2-console`
+O projeto atualmente utiliza **MySQL** como banco de dados principal, com **persistência** dos dados.
 
-Scripts:
-- `schema.sql` — criação das tabelas
-- `data.sql` — dados pré-carregados
-- JSONs: estados, cidades e ceps
+
+## 🔧 Configuração do MySQL
+| Propriedade | Valor |
+|-------------|-------|
+| **Banco** | MySQL 8+ |
+| **Host** | localhost |
+| **Porta** | 3306 |
+| **Usuário** | root (ou conforme .env) |
+| **Senha** | definida no arquivo `.env` |
+| **URL** | `jdbc:mysql://localhost:3306/deliverydb?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC` |
+| **Driver** | `com.mysql.cj.jdbc.Driver` |
+
+
+A aplicação carrega variáveis sensíveis como usuário/senha através do arquivo:
+```
+.env
+```
+E o Spring Boot utiliza o arquivo:
+```
+src/main/resources/application.properties
+```
+para integrar o MySQL com a aplicação.
+
+
+---
+## 🗃 Scripts SQL
+
+
+### `schema.sql`
+- Responsável por criar as tabelas, constraints e relacionamentos.
+- Executado automaticamente ao iniciar a aplicação.
+
+
+### `data.sql`
+- Popula o banco com dados iniciais reais.
+- Ideal para desenvolvimento local.
+
+
+### JSONs auxiliares
+Além dos scripts SQL, o sistema utiliza:
+- `estados.json`
+- `cidades.json`
+- `ceps.json`
+
+
+Eles alimentam informações geográficas estruturadas utilizadas nos módulos de CEP, Cidade e Estado.
 
 ---
 
@@ -262,30 +365,6 @@ src/
 │       └── data.sql
 └── test/
 ```
-
----
-
-# 📚 14. Conformidade com os Roteiros (1 → 8)
-Todos os roteiros foram contemplados:
-- Estrutura inicial ✔️
-- CRUDs completos ✔️
-- DTOs Request/Response ✔️
-- Validações ✔️
-- Relacionamentos complexos ✔️
-- Tratamento de erros ✔️
-- Segurança JWT ✔️
-- Documentação ✔️
-- Entidades e dados iniciais ✔️
-
----
-
-# 🔮 15. Roadmap (Melhorias Futuras)
-- Adicionar testes unitários JUnit + Mockito
-- Adicionar testes de integração
-- Implementar cache com Redis
-- Criar módulo de administração web
-- Criar filas de pedidos com RabbitMQ
-- Deploy em nuvem (Railway / Render / Azure)
 
 ---
 
